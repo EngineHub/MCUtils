@@ -1,5 +1,7 @@
 package org.enginehub.util.minecraft.dumper;
 
+import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
+
 import com.google.common.collect.Lists;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
@@ -10,7 +12,6 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Bootstrap;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
@@ -28,8 +29,7 @@ import java.util.Map;
 public class BlockRegistryDumper extends RegistryDumper<Block> {
 
     public static void main(String[] args) {
-        Bootstrap.func_151354_b();
-        Block.func_149671_p();
+        setupGame();
         (new BlockRegistryDumper(new File("output/blocks.json"))).run();
     }
 

@@ -1,10 +1,8 @@
 package org.enginehub.util.minecraft.dumper;
 
-import net.minecraft.block.Block;
-import net.minecraft.init.Bootstrap;
+import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
+
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.RegistryNamespaced;
 import net.minecraft.util.text.translation.LanguageMap;
@@ -19,9 +17,7 @@ import java.util.Map;
 public class ItemRegistryDumper extends RegistryDumper<Item> {
 
     public static void main(String[] args) {
-        Bootstrap.func_151354_b();
-        Block.func_149671_p();
-        Item.func_150900_l();
+        setupGame();
         (new ItemRegistryDumper(new File("output/items.json"))).run();
     }
 

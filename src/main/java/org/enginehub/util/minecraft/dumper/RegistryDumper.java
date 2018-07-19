@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.RegistryNamespaced;
-import net.minecraft.util.registry.RegistryNamespacedDefaultedByKey;
 
 import java.io.File;
 import java.io.FileOutputStream;

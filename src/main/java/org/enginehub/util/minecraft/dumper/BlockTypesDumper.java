@@ -1,8 +1,9 @@
 package org.enginehub.util.minecraft.dumper;
 
+import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
+
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
-import net.minecraft.init.Bootstrap;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.File;
@@ -14,8 +15,7 @@ import java.util.Set;
 public class BlockTypesDumper {
 
     public static void main(String[] args) {
-        Bootstrap.func_151354_b();
-        Block.func_149671_p();
+        setupGame();
         (new BlockTypesDumper(new File("output/blocktypes.java"))).run();
     }
 
