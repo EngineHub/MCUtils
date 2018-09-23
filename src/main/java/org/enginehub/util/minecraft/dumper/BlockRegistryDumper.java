@@ -15,7 +15,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.registry.RegistryNamespacedDefaultedByKey;
+import net.minecraft.util.registry.IRegistry;
 import net.minecraft.util.text.translation.LanguageMap;
 import org.enginehub.util.minecraft.util.ReflectionUtil;
 
@@ -46,8 +46,8 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
     }
 
     @Override
-    public RegistryNamespacedDefaultedByKey<ResourceLocation, Block> getRegistry() {
-        return Block.field_149771_c;
+    public IRegistry<Block> getRegistry() {
+        return IRegistry.field_212618_g;
     }
 
     @Override

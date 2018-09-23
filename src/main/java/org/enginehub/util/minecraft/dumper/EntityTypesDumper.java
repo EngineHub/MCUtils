@@ -5,6 +5,7 @@ import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 import com.google.common.collect.Sets;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.IRegistry;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -28,7 +29,7 @@ public class EntityTypesDumper {
     public void run() {
         StringBuilder builder = new StringBuilder();
         Set<ResourceLocation> resources = Sets.newTreeSet(Comparator.comparing(ResourceLocation::toString));
-        resources.addAll(EntityType.field_200787_a.func_148742_b());
+        resources.addAll(IRegistry.field_212629_r.func_148742_b());
         for(ResourceLocation resourceLocation : resources) {
             String id = resourceLocation.toString();
             builder.append("public static final EntityType ")

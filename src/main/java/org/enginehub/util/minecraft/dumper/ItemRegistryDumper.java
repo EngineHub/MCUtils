@@ -2,9 +2,10 @@ package org.enginehub.util.minecraft.dumper;
 
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.RegistryNamespaced;
+import net.minecraft.util.registry.IRegistry;
 import net.minecraft.util.text.translation.LanguageMap;
 
 import java.io.File;
@@ -18,6 +19,7 @@ public class ItemRegistryDumper extends RegistryDumper<Item> {
 
     public static void main(String[] args) {
         setupGame();
+        LanguageMap.func_74808_a();
         (new ItemRegistryDumper(new File("output/items.json"))).run();
     }
 
@@ -26,8 +28,8 @@ public class ItemRegistryDumper extends RegistryDumper<Item> {
     }
 
     @Override
-    public RegistryNamespaced<ResourceLocation, Item> getRegistry() {
-        return Item.field_150901_e;
+    public IRegistry<Item> getRegistry() {
+        return IRegistry.field_212630_s;
     }
 
     @Override
@@ -44,7 +46,7 @@ public class ItemRegistryDumper extends RegistryDumper<Item> {
     private Map<String, Object> getPropertiesForItem(ResourceLocation resourceLocation, Item item) {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("id", resourceLocation.toString());
-        map.put("localizedName", LanguageMap.func_74808_a().func_74805_b(item.func_77658_a()));
+        map.put("localizedName", item.func_200295_i(item.func_190903_i()).func_150261_e());
         return map;
     }
 

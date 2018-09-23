@@ -10,6 +10,7 @@ import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.IRegistry;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -36,7 +37,7 @@ public class BlockTypesDumper {
     public void run() {
         StringBuilder builder = new StringBuilder();
         Set<ResourceLocation> resources = Sets.newTreeSet(Comparator.comparing(ResourceLocation::toString));
-        resources.addAll(Block.field_149771_c.func_148742_b());
+        resources.addAll(IRegistry.field_212618_g.func_148742_b());
         for(ResourceLocation resourceLocation : resources) {
             String id = resourceLocation.toString();
             builder.append("public static final BlockType ")
@@ -45,7 +46,7 @@ public class BlockTypesDumper {
                     .append(id)
                     .append("\"");
 
-            Block block = Block.field_149771_c.func_82594_a(resourceLocation);
+            Block block = IRegistry.field_212618_g.func_82594_a(resourceLocation);
             List<String> withs = new ArrayList<>();
             for (Map.Entry<IProperty<?>, Comparable<?>> entry : block.func_176223_P().func_206871_b().entrySet()) {
                 String valueString;
@@ -54,7 +55,7 @@ public class BlockTypesDumper {
                 } else if (entry.getKey() instanceof DirectionProperty) {
                     valueString = "Direction." + String.valueOf(entry.getValue()).toUpperCase();
                 } else if (entry.getKey() instanceof EnumProperty) {
-                    valueString = "\"" + String.valueOf(entry.getValue()) + "\"";
+                    valueString = "\"" + entry.getValue() + "\"";
                 } else {
                     continue;
                 }

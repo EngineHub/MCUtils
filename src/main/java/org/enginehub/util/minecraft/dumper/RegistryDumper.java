@@ -3,7 +3,7 @@ package org.enginehub.util.minecraft.dumper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.RegistryNamespaced;
+import net.minecraft.util.registry.IRegistry;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -32,9 +32,9 @@ abstract class RegistryDumper<V> {
     public void run() {
         List<Map<String, Object>> list = new LinkedList<>();
 
-        RegistryNamespaced<ResourceLocation, V> registry = getRegistry();
+        IRegistry<V> registry = getRegistry();
         for (ResourceLocation resourceLocation : registry.func_148742_b()) {
-            list.addAll(getProperties(resourceLocation, registry.func_82594_a(resourceLocation)));
+            list.addAll(getProperties(resourceLocation, registry.func_212608_b(resourceLocation)));
         }
 
         list.sort(getComparator());
@@ -61,7 +61,7 @@ abstract class RegistryDumper<V> {
 
     public abstract List<Map<String, Object>> getProperties(ResourceLocation resourceLocation, V object);
 
-    public abstract RegistryNamespaced<ResourceLocation, V> getRegistry();
+    public abstract IRegistry<V> getRegistry();
 
     public abstract Comparator<Map<String, Object>> getComparator();
 }

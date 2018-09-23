@@ -3,8 +3,8 @@ package org.enginehub.util.minecraft.dumper;
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
 import com.google.common.collect.Sets;
-import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.IRegistry;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -28,7 +28,7 @@ public class ItemTypesDumper {
     public void run() {
         StringBuilder builder = new StringBuilder();
         Set<ResourceLocation> resources = Sets.newTreeSet(Comparator.comparing(ResourceLocation::toString));
-        resources.addAll(Item.field_150901_e.func_148742_b());
+        resources.addAll(IRegistry.field_212630_s.func_148742_b());
         for(ResourceLocation resourceLocation : resources) {
             String id = resourceLocation.toString();
             builder.append("public static final ItemType ")
