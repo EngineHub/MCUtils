@@ -3,7 +3,6 @@ package org.enginehub.util.minecraft.dumper;
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
 import com.google.common.collect.Sets;
-import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.IRegistry;
 
@@ -32,9 +31,9 @@ public class EntityTypesDumper {
         resources.addAll(IRegistry.field_212629_r.func_148742_b());
         for(ResourceLocation resourceLocation : resources) {
             String id = resourceLocation.toString();
-            builder.append("public static final EntityType ")
+            builder.append("@Nullable public static final EntityType ")
                     .append(id.split(":")[1].toUpperCase())
-                    .append(" = register(\"")
+                    .append(" = get(\"")
                     .append(id)
                     .append("\"");
 

@@ -12,32 +12,30 @@ import java.io.IOException;
 import java.util.Comparator;
 import java.util.Set;
 
-public class ItemTypesDumper {
+public class BiomeTypesDumper {
 
     public static void main(String[] args) {
         setupGame();
-        (new ItemTypesDumper(new File("output/itemtypes.java"))).run();
+        (new BiomeTypesDumper(new File("output/biometypes.java"))).run();
     }
 
     private File file;
 
-    public ItemTypesDumper(File file) {
+    public BiomeTypesDumper(File file) {
         this.file = file;
     }
 
     public void run() {
         StringBuilder builder = new StringBuilder();
         Set<ResourceLocation> resources = Sets.newTreeSet(Comparator.comparing(ResourceLocation::toString));
-        resources.addAll(IRegistry.field_212630_s.func_148742_b());
+        resources.addAll(IRegistry.field_212624_m.func_148742_b());
         for(ResourceLocation resourceLocation : resources) {
             String id = resourceLocation.toString();
-            builder.append("@Nullable public static final ItemType ")
+            builder.append("@Nullable public static final BiomeType ")
                     .append(id.split(":")[1].toUpperCase())
                     .append(" = get(\"")
                     .append(id)
-                    .append("\"");
-
-            builder.append(");\n");
+                    .append("\");\n");
         }
         try (FileWriter writer = new FileWriter(file)) {
             writer.write(builder.toString());
@@ -45,5 +43,5 @@ public class ItemTypesDumper {
             e.printStackTrace();
         }
     }
-
 }
+
