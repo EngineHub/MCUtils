@@ -43,7 +43,7 @@ public class ItemCategoriesDumper {
 
         for(ResourceLocation resourceLocation : resources) {
             String id = resourceLocation.toString();
-            builder.append("@Nullable public static final ItemCategory ")
+            builder.append("public static final ItemCategory ")
                     .append(id.split(":")[1].toUpperCase())
                     .append(" = get(\"")
                     .append(id)

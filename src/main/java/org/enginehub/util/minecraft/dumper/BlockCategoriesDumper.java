@@ -43,7 +43,7 @@ public class BlockCategoriesDumper {
 
         for(ResourceLocation resourceLocation : resources) {
             String id = resourceLocation.toString();
-            builder.append("@Nullable public static final BlockCategory ")
+            builder.append("public static final BlockCategory ")
                     .append(id.split(":")[1].toUpperCase())
                     .append(" = get(\"")
                     .append(id)

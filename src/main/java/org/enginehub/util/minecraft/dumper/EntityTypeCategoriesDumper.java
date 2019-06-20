@@ -16,17 +16,17 @@ import java.util.Set;
 
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
-public class EntityCategoriesDumper {
+public class EntityTypeCategoriesDumper {
 
     // worldedit doesn't actually do entity type categories yet
     public static void main(String[] args) {
         setupGame();
-        (new EntityCategoriesDumper(new File("output/entitycategories.java"))).run();
+        (new EntityTypeCategoriesDumper(new File("output/entitytypecategories.java"))).run();
     }
 
     private File file;
 
-    public EntityCategoriesDumper(File file) {
+    public EntityTypeCategoriesDumper(File file) {
         this.file = file;
     }
 
@@ -44,7 +44,7 @@ public class EntityCategoriesDumper {
 
         for(ResourceLocation resourceLocation : resources) {
             String id = resourceLocation.toString();
-            builder.append("@Nullable public static final EntityTypeCategory ")
+            builder.append("public static final EntityTypeCategory ")
                     .append(id.split(":")[1].toUpperCase())
                     .append(" = get(\"")
                     .append(id)
