@@ -1,21 +1,27 @@
 package org.enginehub.util.minecraft.util;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class ReflectionUtil {
 
-    public static Object getField(Object obj, Class<?> clazz, String name, String obfName) {
+    public static Object getField(Object obj, Class<?> clazz, String name) {
         try {
-            Field f;
-            try {
-                f = clazz.getDeclaredField(name);
-            } catch (NoSuchFieldException ignored) {
-                f = clazz.getDeclaredField(obfName);
-            }
-            if (f == null) return null;
+            Field f = clazz.getDeclaredField(name);
             f.setAccessible(true);
             return f.get(obj);
         } catch (IllegalAccessException | NoSuchFieldException ignored) {
+        }
+        return null;
+    }
+
+    public static Object invokeMethod(Object obj, Class<?> clazz, String name, Class<?>[] paramClasses, Object[] params) {
+        try {
+            Method m = clazz.getDeclaredMethod(name, paramClasses);
+            m.setAccessible(true);
+            return m.invoke(obj, params);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
         }
         return null;
     }

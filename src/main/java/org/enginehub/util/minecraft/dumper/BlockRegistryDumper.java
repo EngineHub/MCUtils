@@ -1,22 +1,25 @@
 package org.enginehub.util.minecraft.dumper;
 
-import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
-
 import com.google.common.collect.Lists;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
-import net.minecraft.block.material.EnumPushReaction;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.material.PushReaction;
+import net.minecraft.inventory.IClearable;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.registry.IRegistry;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.translation.LanguageMap;
+import net.minecraft.world.EmptyBlockReader;
 import org.enginehub.util.minecraft.util.ReflectionUtil;
 
 import java.io.File;
@@ -25,6 +28,8 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
 public class BlockRegistryDumper extends RegistryDumper<Block> {
 
@@ -46,8 +51,8 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
     }
 
     @Override
-    public IRegistry<Block> getRegistry() {
-        return IRegistry.field_212618_g;
+    public Registry<Block> getRegistry() {
+        return Registry.field_212618_g;
     }
 
     @Override
@@ -65,14 +70,15 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
     }
 
     private Map<String, Object> getMaterial(Block b) {
-        IBlockState bs = b.func_176223_P(); // getDefaultBlockState
+        BlockState bs = b.func_176223_P(); // getDefaultBlockState
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("powerSource", bs.func_185897_m()); // canProvidePower
         map.put("lightValue", bs.func_185906_d()); // getLightValue
-        map.put("hardness", ReflectionUtil.getField(b, Block.class, "blockHardness", "field_149782_v"));
-        map.put("resistance", ReflectionUtil.getField(b, Block.class, "blockResistance", "field_149781_w"));
+        map.put("hardness", ReflectionUtil.getField(b, Block.class, "field_149782_v")); // blockHardness
+        map.put("resistance", ReflectionUtil.getField(b, Block.class, "field_149781_w")); // blockResistance
         map.put("ticksRandomly", b.func_149653_t(bs)); // getTickRandomly
-        map.put("fullCube", bs.func_185917_h()); // isFullCube
+        VoxelShape vs = b.func_196247_c(bs, EmptyBlockReader.INSTANCE, BlockPos.field_177992_a);
+        map.put("fullCube", !vs.func_197766_b() && isFullCube(vs.func_197752_a())); // isFullCube
         map.put("slipperiness", b.func_208618_m()); // getSlipperiness
         Material m = bs.func_185904_a(); // getMaterial
         map.put("liquid", m.func_76224_d()); // isLiquid
@@ -82,12 +88,18 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
         map.put("opaque", m.func_76218_k()); // isOpaque
         map.put("replacedDuringPlacement", m.func_76222_j()); // isReplaceable
         map.put("toolRequired", !m.func_76229_l()); // isToolNotRequired
-        map.put("fragileWhenPushed", m.func_186274_m() == EnumPushReaction.DESTROY);
-        map.put("unpushable", m.func_186274_m() == EnumPushReaction.BLOCK);
+        map.put("fragileWhenPushed", m.func_186274_m() == PushReaction.DESTROY);
+        map.put("unpushable", m.func_186274_m() == PushReaction.BLOCK);
         map.put("mapColor", rgb(m.func_151565_r().field_76291_p));
-        map.put("isTranslucent", ReflectionUtil.getField(b, Block.class, "translucent", "field_208621_p"));
-        map.put("hasContainer", b instanceof BlockContainer);
+        map.put("isTranslucent", ReflectionUtil.getField(b, Block.class, "field_208621_p")); // translucent
+        map.put("hasContainer", b instanceof ITileEntityProvider &&
+                (((ITileEntityProvider) b).func_196283_a_(EmptyBlockReader.INSTANCE) instanceof IClearable));
         return map;
+    }
+
+    private boolean isFullCube(AxisAlignedBB aabb) {
+        return aabb.field_72340_a == 0 && aabb.field_72338_b == 0 && aabb.field_72339_c == 0
+                && aabb.field_72336_d == 1D && aabb.field_72337_e == 1D && aabb.field_72334_f == 1D;
     }
 
     public static class Vec3iAdapter extends TypeAdapter<Vec3i> {
