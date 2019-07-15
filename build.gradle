@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    compile fileTree('mapped_jars')
+    compile fileTree(dir: 'mapped_jars', include: '*.jar')
     compile group: 'com.google.guava', name: 'guava', version: '23.5-jre'
     compile group: 'com.google.code.gson', name: 'gson', version:'2.3.1'
     compile group: 'com.mojang', name: 'brigadier', version: '1.0.17'

@@ -9,7 +9,11 @@ import net.minecraft.block.Block;
 import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.ItemTagsProvider;
 import net.minecraft.data.TagsProvider;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IProperty;
+import net.minecraft.state.IntegerProperty;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.IRegistry;
@@ -21,7 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,11 +47,11 @@ public class DataVersionDumper {
 
     @SuppressWarnings("unchecked")
     private <T> Map<String, List<String>> getTags(TagsProvider<T> provider, IRegistry<T> registry) {
-        Map<String, List<String>> tagCollector = new HashMap<>();
+        Map<String, List<String>> tagCollector = new LinkedHashMap<>();
 
         Map<Object, Object> tags = (Map<Object, Object>) ReflectionUtil.getField(provider, TagsProvider.class, "field_200434_b");
 
-        Map<String, List<Tag.TagEntry<T>>> deferred = new HashMap<>();
+        Map<String, List<Tag.TagEntry<T>>> deferred = new LinkedHashMap<>();
         tags.forEach((key, value) -> {
             Tag<T> keyTag = (Tag<T>) key;
             ((Set<Tag.ITagEntry<T>>) ReflectionUtil.getField(value, Tag.Builder.class, "field_200052_a")).forEach(entry -> {
@@ -63,7 +67,7 @@ public class DataVersionDumper {
         });
 
         while (!deferred.isEmpty()) {
-            Map<String, List<Tag.TagEntry<T>>> iter = new HashMap<>(deferred);
+            Map<String, List<Tag.TagEntry<T>>> iter = new LinkedHashMap<>(deferred);
             deferred.clear();
             iter.forEach((key, value) -> {
                 for (Tag.TagEntry<T> entry : value) {
@@ -81,17 +85,34 @@ public class DataVersionDumper {
         return tagCollector;
     }
 
+    private String getTypeName(Class<? extends IProperty> clazz) {
+        if (clazz == EnumProperty.class) {
+            return "enum";
+        } else if (clazz == IntegerProperty.class) {
+            return "int";
+        } else if (clazz == BooleanProperty.class) {
+            return "bool";
+        } else if (clazz == DirectionProperty.class) {
+            return "direction";
+        } else {
+            throw new RuntimeException("Unknown property!");
+        }
+    }
+
     public void run() {
         Comparator<ResourceLocation> resourceComparator = Comparator.comparing(ResourceLocation::toString);
 
         // Blocks
-        Map<String, Map<String, Object>> blocks = new HashMap<>();
+        Map<String, Map<String, Object>> blocks = new LinkedHashMap<>();
         IRegistry.field_212618_g.func_148742_b().stream().sorted(resourceComparator).forEach(blockId -> {
-            Map<String, Object> bl = new HashMap<>();
+            Map<String, Object> bl = new LinkedHashMap<>();
             Block block = IRegistry.field_212618_g.func_82594_a(blockId);
-            Map<String, List<Object>> properties = new HashMap<>();
+            Map<String, Object> properties = new LinkedHashMap<>();
             for(IProperty<?> prop : block.func_176194_O().func_177623_d()) {
-                properties.put(prop.func_177701_a(), prop.func_177700_c().stream().map(s -> s.toString().toLowerCase()).collect(Collectors.toList()));
+                Map<String, Object> propertyValues = new LinkedHashMap<>();
+                propertyValues.put("values", prop.func_177700_c().stream().map(s -> s.toString().toLowerCase()).collect(Collectors.toList()));
+                propertyValues.put("type", getTypeName(prop.getClass()));
+                properties.put(prop.func_177701_a(), propertyValues);
             }
             bl.put("properties", properties);
             StringBuilder defaultState = new StringBuilder();
@@ -101,7 +122,7 @@ public class DataVersionDumper {
                 block.func_176223_P().func_206871_b().forEach((prop, val) -> bits.add(prop.func_177701_a() + "=" + val.toString().toLowerCase()));
                 defaultState.append("[").append(String.join(",", bits)).append("]");
             }
-            bl.put("default", defaultState.toString());
+            bl.put("defaultstate", defaultState.toString());
             blocks.put(blockId.toString(), bl);
         });
 
@@ -126,14 +147,14 @@ public class DataVersionDumper {
 
         Map<String, List<String>> itemTags = getTags(itemTagsProvider, IRegistry.field_212630_s);
 
-        Map<String, Object> output = new HashMap<>();
+        Map<String, Object> output = new LinkedHashMap<>();
         output.put("blocks", blocks);
         output.put("items", items);
         output.put("entities", entities);
         output.put("biomes", biomes);
         output.put("blocktags", blockTags);
         output.put("itemtags", itemTags);
-        output.put("entitytags", new HashMap<>());
+        output.put("entitytags", new LinkedHashMap<>());
 
         try {
             Files.write(gson.toJson(output), file, StandardCharsets.UTF_8);
