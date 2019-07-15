@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.data.BlockTagsProvider;
+import net.minecraft.data.EntityTypeTagsProvider;
 import net.minecraft.data.ItemTagsProvider;
 import net.minecraft.data.TagsProvider;
 import net.minecraft.state.BooleanProperty;
@@ -16,7 +17,8 @@ import net.minecraft.state.IProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.IRegistry;
+import net.minecraft.util.SharedConstants;
+import net.minecraft.util.registry.Registry;
 import org.enginehub.util.minecraft.util.ReflectionUtil;
 
 import java.io.File;
@@ -25,6 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +38,7 @@ public class DataVersionDumper {
 
     public static void main(String[] args) {
         setupGame();
-        (new DataVersionDumper(new File("output/" + 1631 + ".json"))).run();
+        (new DataVersionDumper(new File("output/" + SharedConstants.func_215069_a().getWorldVersion() + ".json"))).run();
     }
 
     private File file;
@@ -46,8 +49,8 @@ public class DataVersionDumper {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> Map<String, List<String>> getTags(TagsProvider<T> provider, IRegistry<T> registry) {
-        Map<String, List<String>> tagCollector = new LinkedHashMap<>();
+    private <T> Map<String, List<String>> getTags(TagsProvider<T> provider, Registry<T> registry) {
+        Map<String, List<String>> tagCollector = new HashMap<>();
 
         Map<Object, Object> tags = (Map<Object, Object>) ReflectionUtil.getField(provider, TagsProvider.class, "field_200434_b");
 
@@ -104,9 +107,9 @@ public class DataVersionDumper {
 
         // Blocks
         Map<String, Map<String, Object>> blocks = new LinkedHashMap<>();
-        IRegistry.field_212618_g.func_148742_b().stream().sorted(resourceComparator).forEach(blockId -> {
+        Registry.field_212618_g.func_148742_b().stream().sorted(resourceComparator).forEach(blockId -> {
             Map<String, Object> bl = new LinkedHashMap<>();
-            Block block = IRegistry.field_212618_g.func_82594_a(blockId);
+            Block block = Registry.field_212618_g.func_82594_a(blockId);
             Map<String, Object> properties = new LinkedHashMap<>();
             for(IProperty<?> prop : block.func_176194_O().func_177623_d()) {
                 Map<String, Object> propertyValues = new LinkedHashMap<>();
@@ -127,25 +130,31 @@ public class DataVersionDumper {
         });
 
         // Items
-        List<String> items = IRegistry.field_212630_s.func_148742_b().stream().sorted(resourceComparator).map(ResourceLocation::toString).collect(Collectors.toList());
+        List<String> items = Registry.field_212630_s.func_148742_b().stream().sorted(resourceComparator).map(ResourceLocation::toString).collect(Collectors.toList());
 
         // Entities
-        List<String> entities = IRegistry.field_212629_r.func_148742_b().stream().sorted(resourceComparator).map(ResourceLocation::toString).collect(Collectors.toList());
+        List<String> entities = Registry.field_212629_r.func_148742_b().stream().sorted(resourceComparator).map(ResourceLocation::toString).collect(Collectors.toList());
 
         // Biomes
-        List<String> biomes = IRegistry.field_212624_m.func_148742_b().stream().sorted(resourceComparator).map(ResourceLocation::toString).collect(Collectors.toList());
+        List<String> biomes = Registry.field_212624_m.func_148742_b().stream().sorted(resourceComparator).map(ResourceLocation::toString).collect(Collectors.toList());
 
         // BlockTags
         final BlockTagsProvider blockTagsProvider = new BlockTagsProvider(null);
         ReflectionUtil.invokeMethod(blockTagsProvider, BlockTagsProvider.class, "func_200432_c", null, null); // initialize
 
-        Map<String, List<String>> blockTags = getTags(blockTagsProvider, IRegistry.field_212618_g);
+        Map<String, List<String>> blockTags = getTags(blockTagsProvider, Registry.field_212618_g);
 
         // ItemTags
         final ItemTagsProvider itemTagsProvider = new ItemTagsProvider(null);
         ReflectionUtil.invokeMethod(itemTagsProvider, ItemTagsProvider.class, "func_200432_c", null, null); // initialize
 
-        Map<String, List<String>> itemTags = getTags(itemTagsProvider, IRegistry.field_212630_s);
+        Map<String, List<String>> itemTags = getTags(itemTagsProvider, Registry.field_212630_s);
+
+        // EntityTags
+        final EntityTypeTagsProvider entityTypeTagsProvider = new EntityTypeTagsProvider(null);
+        ReflectionUtil.invokeMethod(entityTypeTagsProvider, EntityTypeTagsProvider.class, "func_200432_c", null, null); // initialize
+
+        Map<String, List<String>> entityTags = getTags(entityTypeTagsProvider, Registry.field_212629_r);
 
         Map<String, Object> output = new LinkedHashMap<>();
         output.put("blocks", blocks);
@@ -154,7 +163,7 @@ public class DataVersionDumper {
         output.put("biomes", biomes);
         output.put("blocktags", blockTags);
         output.put("itemtags", itemTags);
-        output.put("entitytags", new LinkedHashMap<>());
+        output.put("entitytags", entityTags);
 
         try {
             Files.write(gson.toJson(output), file, StandardCharsets.UTF_8);
