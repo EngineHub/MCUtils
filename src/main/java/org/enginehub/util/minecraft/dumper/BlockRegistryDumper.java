@@ -18,7 +18,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.text.translation.LanguageMap;
+import net.minecraft.util.text.LanguageMap;
 import net.minecraft.world.EmptyBlockReader;
 import org.enginehub.util.minecraft.util.ReflectionUtil;
 
@@ -77,7 +77,7 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
         map.put("hardness", ReflectionUtil.getField(b, Block.class, "field_149782_v")); // blockHardness
         map.put("resistance", ReflectionUtil.getField(b, Block.class, "field_149781_w")); // blockResistance
         map.put("ticksRandomly", b.func_149653_t(bs)); // getTickRandomly
-        VoxelShape vs = b.func_196247_c(bs, EmptyBlockReader.INSTANCE, BlockPos.field_177992_a);
+        VoxelShape vs = bs.func_196954_c(EmptyBlockReader.INSTANCE, BlockPos.field_177992_a);
         map.put("fullCube", !vs.func_197766_b() && isFullCube(vs.func_197752_a())); // isFullCube
         map.put("slipperiness", b.func_208618_m()); // getSlipperiness
         Material m = bs.func_185904_a(); // getMaterial

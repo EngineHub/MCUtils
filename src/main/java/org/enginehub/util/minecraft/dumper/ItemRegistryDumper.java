@@ -3,7 +3,7 @@ package org.enginehub.util.minecraft.dumper;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.text.translation.LanguageMap;
+import net.minecraft.util.text.LanguageMap;
 
 import java.io.File;
 import java.util.ArrayList;
