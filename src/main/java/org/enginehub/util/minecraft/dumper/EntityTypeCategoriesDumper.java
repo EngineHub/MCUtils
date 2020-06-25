@@ -37,10 +37,8 @@ public class EntityTypeCategoriesDumper {
         final EntityTypeTagsProvider provider = new EntityTypeTagsProvider(null);
         ReflectionUtil.invokeMethod(provider, EntityTypeTagsProvider.class, "func_200432_c", null, null); // initialize
 
-        Map<Object, Object> map = (Map<Object, Object>) ReflectionUtil.getField(provider, TagsProvider.class, "field_200434_b");
-        for (Object o : map.keySet()) {
-            resources.add(((Tag<?>) o).func_199886_b());
-        }
+        Map<ResourceLocation, net.minecraft.tags.ITag.Builder> map = (Map<ResourceLocation, net.minecraft.tags.ITag.Builder>) ReflectionUtil.getField(provider, TagsProvider.class, "field_200434_b");
+        resources.addAll(map.keySet());
 
         for(ResourceLocation resourceLocation : resources) {
             String id = resourceLocation.toString();

@@ -14,9 +14,9 @@ import net.minecraft.inventory.IClearable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.LanguageMap;
 import net.minecraft.world.EmptyBlockReader;
@@ -46,8 +46,8 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
     public void registerAdapters(GsonBuilder builder) {
         super.registerAdapters(builder);
 
-        builder.registerTypeAdapter(Vec3i.class, new Vec3iAdapter());
-        builder.registerTypeAdapter(Vec3d.class, new Vec3dAdapter());
+        builder.registerTypeAdapter(Vector3i.class, new Vec3iAdapter());
+        builder.registerTypeAdapter(Vector3d.class, new Vec3dAdapter());
     }
 
     @Override
@@ -64,7 +64,7 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
     public List<Map<String, Object>> getProperties(ResourceLocation resourceLocation, Block block) {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("id", resourceLocation.toString());
-        map.put("localizedName", LanguageMap.func_74808_a().func_74805_b(block.func_149739_a()));
+        map.put("localizedName", LanguageMap.func_74808_a().func_230503_a_(block.func_149739_a()));
         map.put("material", getMaterial(block));
         return Lists.newArrayList(map);
     }
@@ -87,7 +87,7 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
         map.put("burnable", m.func_76217_h()); // getCanBurn
         map.put("opaque", m.func_76218_k()); // isOpaque
         map.put("replacedDuringPlacement", m.func_76222_j()); // isReplaceable
-        map.put("toolRequired", !m.func_76229_l()); // isToolNotRequired
+        map.put("toolRequired", bs.func_235783_q_()); // isToolRequired
         map.put("fragileWhenPushed", m.func_186274_m() == PushReaction.DESTROY);
         map.put("unpushable", m.func_186274_m() == PushReaction.BLOCK);
         map.put("mapColor", rgb(m.func_151565_r().field_76291_p));
@@ -102,13 +102,13 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
                 && aabb.field_72336_d == 1D && aabb.field_72337_e == 1D && aabb.field_72334_f == 1D;
     }
 
-    public static class Vec3iAdapter extends TypeAdapter<Vec3i> {
+    public static class Vec3iAdapter extends TypeAdapter<Vector3i> {
         @Override
-        public Vec3i read(final JsonReader in) throws IOException {
+        public Vector3i read(final JsonReader in) throws IOException {
             throw new UnsupportedOperationException();
         }
         @Override
-        public void write(final JsonWriter out, final Vec3i vec) throws IOException {
+        public void write(final JsonWriter out, final Vector3i vec) throws IOException {
             out.beginArray();
             out.value(vec.func_177958_n()); // x
             out.value(vec.func_177956_o()); // y
@@ -117,13 +117,13 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
         }
     }
 
-    public static class Vec3dAdapter extends TypeAdapter<Vec3d> {
+    public static class Vec3dAdapter extends TypeAdapter<Vector3d> {
         @Override
-        public Vec3d read(final JsonReader in) throws IOException {
+        public Vector3d read(final JsonReader in) throws IOException {
             throw new UnsupportedOperationException();
         }
         @Override
-        public void write(final JsonWriter out, final Vec3d vec) throws IOException {
+        public void write(final JsonWriter out, final Vector3d vec) throws IOException {
             out.beginArray();
             out.value(vec.field_72450_a);
             out.value(vec.field_72448_b);

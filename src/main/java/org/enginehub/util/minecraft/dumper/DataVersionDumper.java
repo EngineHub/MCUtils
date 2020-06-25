@@ -13,8 +13,9 @@ import net.minecraft.data.TagsProvider;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.EnumProperty;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.state.IntegerProperty;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SharedConstants;
@@ -52,34 +53,33 @@ public class DataVersionDumper {
     private <T> Map<String, List<String>> getTags(TagsProvider<T> provider, Registry<T> registry) {
         Map<String, List<String>> tagCollector = new HashMap<>();
 
-        Map<Object, Object> tags = (Map<Object, Object>) ReflectionUtil.getField(provider, TagsProvider.class, "field_200434_b");
+        Map<ResourceLocation, net.minecraft.tags.ITag.Builder> tags = (Map<ResourceLocation, net.minecraft.tags.ITag.Builder>) ReflectionUtil.getField(provider, TagsProvider.class, "field_200434_b");
 
-        Map<String, List<Tag.TagEntry<T>>> deferred = new LinkedHashMap<>();
+        Map<String, List<Tag.TagEntry>> deferred = new LinkedHashMap<>();
         tags.forEach((key, value) -> {
-            Tag<T> keyTag = (Tag<T>) key;
-            ((Set<Tag.ITagEntry<T>>) ReflectionUtil.getField(value, Tag.Builder.class, "field_200052_a")).forEach(entry -> {
+            ((List<Tag.Proxy>) ReflectionUtil.getField(value, Tag.Builder.class, "field_232953_a_")).forEach(proxy -> {
+                ITag.ITagEntry entry = proxy.func_232968_a_();
                 if (entry instanceof Tag.TagEntry) {
-                    deferred.computeIfAbsent(keyTag.func_199886_b().toString(), kk -> new ArrayList<>()).add((Tag.TagEntry<T>) entry);
+                    deferred.computeIfAbsent(key.toString(), kk -> new ArrayList<>()).add((Tag.TagEntry) entry);
                 } else {
-                    tagCollector.computeIfAbsent(keyTag.func_199886_b().toString(), kk -> new ArrayList<>()).addAll(
-                            ((Collection<T>) ReflectionUtil.getField(entry, Tag.ListEntry.class, "field_200165_a")).stream()
-                                    .map(block -> registry.func_177774_c(block).toString())
-                                    .collect(Collectors.toList()));
+                    tagCollector.computeIfAbsent(key.toString(), kk -> new ArrayList<>()).add(
+                            ReflectionUtil.getField(entry, ITag.ItemEntry.class, "field_232969_a_").toString());
                 }
             });
         });
 
         while (!deferred.isEmpty()) {
-            Map<String, List<Tag.TagEntry<T>>> iter = new LinkedHashMap<>(deferred);
+            Map<String, List<Tag.TagEntry>> iter = new LinkedHashMap<>(deferred);
             deferred.clear();
             iter.forEach((key, value) -> {
-                for (Tag.TagEntry<T> entry : value) {
-                    if (deferred.containsKey(entry.func_200577_a().toString())) {
+                for (Tag.TagEntry entry : value) {
+                    String name = ReflectionUtil.getField(entry, ITag.TagEntry.class, "field_200163_a").toString();
+                    if (deferred.containsKey(name)) {
                         deferred.put(key, value);
-                    } else if (!tagCollector.containsKey(entry.func_200577_a().toString())) {
-                        throw new RuntimeException("Missing tag! " + entry.func_200577_a().toString());
+                    } else if (!tagCollector.containsKey(name)) {
+                        throw new RuntimeException("Missing tag! " + name);
                     } else {
-                        tagCollector.computeIfAbsent(key, kk -> new ArrayList<>()).addAll(tagCollector.get(entry.func_200577_a().toString()));
+                        tagCollector.computeIfAbsent(key, kk -> new ArrayList<>()).addAll(tagCollector.get(name));
                     }
                 }
             });
@@ -88,7 +88,7 @@ public class DataVersionDumper {
         return tagCollector;
     }
 
-    private String getTypeName(Class<? extends IProperty> clazz) {
+    private String getTypeName(Class<? extends Property> clazz) {
         if (clazz == EnumProperty.class) {
             return "enum";
         } else if (clazz == IntegerProperty.class) {
@@ -111,7 +111,7 @@ public class DataVersionDumper {
             Map<String, Object> bl = new LinkedHashMap<>();
             Block block = Registry.field_212618_g.func_82594_a(blockId);
             Map<String, Object> properties = new LinkedHashMap<>();
-            for(IProperty<?> prop : block.func_176194_O().func_177623_d()) {
+            for(Property<?> prop : block.func_176194_O().func_177623_d()) {
                 Map<String, Object> propertyValues = new LinkedHashMap<>();
                 propertyValues.put("values", prop.func_177700_c().stream().map(s -> s.toString().toLowerCase()).collect(Collectors.toList()));
                 propertyValues.put("type", getTypeName(prop.getClass()));
@@ -145,7 +145,7 @@ public class DataVersionDumper {
         Map<String, List<String>> blockTags = getTags(blockTagsProvider, Registry.field_212618_g);
 
         // ItemTags
-        final ItemTagsProvider itemTagsProvider = new ItemTagsProvider(null);
+        final ItemTagsProvider itemTagsProvider = new ItemTagsProvider(null, blockTagsProvider);
         ReflectionUtil.invokeMethod(itemTagsProvider, ItemTagsProvider.class, "func_200432_c", null, null); // initialize
 
         Map<String, List<String>> itemTags = getTags(itemTagsProvider, Registry.field_212630_s);
