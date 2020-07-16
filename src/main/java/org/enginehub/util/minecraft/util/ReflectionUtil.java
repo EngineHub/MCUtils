@@ -11,9 +11,9 @@ public class ReflectionUtil {
             Field f = clazz.getDeclaredField(name);
             f.setAccessible(true);
             return f.get(obj);
-        } catch (IllegalAccessException | NoSuchFieldException ignored) {
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
     public static Object invokeMethod(Object obj, Class<?> clazz, String name, Class<?>[] paramClasses, Object[] params) {
@@ -21,8 +21,8 @@ public class ReflectionUtil {
             Method m = clazz.getDeclaredMethod(name, paramClasses);
             m.setAccessible(true);
             return m.invoke(obj, params);
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
         }
-        return null;
     }
 }

@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ITileEntityProvider;
@@ -74,8 +75,8 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("powerSource", bs.func_185897_m()); // canProvidePower
         map.put("lightValue", bs.func_185906_d()); // getLightValue
-        map.put("hardness", ReflectionUtil.getField(b, Block.class, "field_149782_v")); // blockHardness
-        map.put("resistance", ReflectionUtil.getField(b, Block.class, "field_149781_w")); // blockResistance
+        map.put("hardness", bs.func_185887_b(null, null)); // blockHardness
+        map.put("resistance", ReflectionUtil.getField(b, AbstractBlock.class, "field_235689_au_")); // blastResistance
         map.put("ticksRandomly", b.func_149653_t(bs)); // getTickRandomly
         VoxelShape vs = bs.func_196954_c(EmptyBlockReader.INSTANCE, BlockPos.field_177992_a);
         map.put("fullCube", !vs.func_197766_b() && isFullCube(vs.func_197752_a())); // isFullCube
@@ -91,7 +92,7 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
         map.put("fragileWhenPushed", m.func_186274_m() == PushReaction.DESTROY);
         map.put("unpushable", m.func_186274_m() == PushReaction.BLOCK);
         map.put("mapColor", rgb(m.func_151565_r().field_76291_p));
-        map.put("isTranslucent", ReflectionUtil.getField(b, Block.class, "field_208621_p")); // translucent
+//        map.put("isTranslucent", ReflectionUtil.getField(b, Block.class, "field_208621_p")); // translucent
         map.put("hasContainer", b instanceof ITileEntityProvider &&
                 (((ITileEntityProvider) b).func_196283_a_(EmptyBlockReader.INSTANCE) instanceof IClearable));
         return map;
