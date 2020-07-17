@@ -1,7 +1,7 @@
 package org.enginehub.util.minecraft.dumper;
 
-import com.google.common.collect.Sets;
-import net.minecraft.util.ResourceLocation;
+import com.google.common.collect.ImmutableSortedSet;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import java.io.File;
@@ -19,25 +19,24 @@ public class EntityTypesDumper {
         (new EntityTypesDumper(new File("output/entitytypes.java"))).run();
     }
 
-    private File file;
+    private final File file;
 
     public EntityTypesDumper(File file) {
         this.file = file;
     }
 
     public void run() {
+        Set<Identifier> resources = ImmutableSortedSet.copyOf(
+            Comparator.comparing(Identifier::toString),
+            Registry.ENTITY_TYPE.getIds()
+        );
         StringBuilder builder = new StringBuilder();
-        Set<ResourceLocation> resources = Sets.newTreeSet(Comparator.comparing(ResourceLocation::toString));
-        resources.addAll(Registry.field_212629_r.func_148742_b());
-        for(ResourceLocation resourceLocation : resources) {
-            String id = resourceLocation.toString();
+        for (Identifier resourceLocation : resources) {
             builder.append("@Nullable public static final EntityType ")
-                    .append(id.split(":")[1].toUpperCase())
+                    .append(resourceLocation.getPath().toUpperCase())
                     .append(" = get(\"")
-                    .append(id)
-                    .append("\"");
-
-            builder.append(");\n");
+                    .append(resourceLocation.toString())
+                    .append("\");\n");
         }
         try (FileWriter writer = new FileWriter(file)) {
             writer.write(builder.toString());

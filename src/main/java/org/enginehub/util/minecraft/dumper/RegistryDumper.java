@@ -1,8 +1,9 @@
 package org.enginehub.util.minecraft.dumper;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import java.io.File;
@@ -12,11 +13,12 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 abstract class RegistryDumper<V> {
 
-    private File file;
-    private Gson gson;
+    private final File file;
+    private final Gson gson;
 
     protected RegistryDumper(File file) {
         this.file = file;
@@ -30,14 +32,14 @@ abstract class RegistryDumper<V> {
     }
 
     public void run() {
-        List<Map<String, Object>> list = new LinkedList<>();
-
         Registry<V> registry = getRegistry();
-        for (ResourceLocation resourceLocation : registry.func_148742_b()) {
-            list.addAll(getProperties(resourceLocation, registry.func_82594_a(resourceLocation)));
-        }
+        ImmutableList<Map<String, Object>> list = ImmutableList.sortedCopyOf(
+            getComparator(),
+            getRegistry().getIds().stream()
+                .flatMap(v -> getProperties(v, registry.get(v)).stream())
+                .collect(Collectors.toList())
+        );
 
-        list.sort(getComparator());
         String out = gson.toJson(list);
         this.write(out);
         System.out.println("Wrote file: " + file.getAbsolutePath());
@@ -59,7 +61,7 @@ abstract class RegistryDumper<V> {
         return String.format("#%02x%02x%02x", r, g, b);
     }
 
-    public abstract List<Map<String, Object>> getProperties(ResourceLocation resourceLocation, V object);
+    public abstract List<Map<String, Object>> getProperties(Identifier resourceLocation, V object);
 
     public abstract Registry<V> getRegistry();
 
