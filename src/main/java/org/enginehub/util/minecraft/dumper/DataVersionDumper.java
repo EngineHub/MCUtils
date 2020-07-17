@@ -20,10 +20,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -45,12 +44,13 @@ public class DataVersionDumper {
     }
 
     private <T> Map<String, List<String>> getTags(TagContainer<T> provider, Registry<T> registry) {
-        Map<String, List<String>> tagCollector = new HashMap<>();
+        Map<String, List<String>> tagCollector = new TreeMap<>();
 
         provider.getEntries().forEach((key, value) ->
             tagCollector.put(key.toString(), value.values().stream()
                 .map(entry -> checkNotNull(registry.getId(entry)))
                 .map(Identifier::toString)
+                .sorted()
                 .collect(Collectors.toList())));
 
         return tagCollector;
@@ -75,13 +75,13 @@ public class DataVersionDumper {
         Comparator<Identifier> resourceComparator = Comparator.comparing(Identifier::toString);
 
         // Blocks
-        Map<String, Map<String, Object>> blocks = new LinkedHashMap<>();
-        Registry.BLOCK.getIds().stream().sorted(resourceComparator).forEach(blockId -> {
-            Map<String, Object> bl = new LinkedHashMap<>();
+        Map<String, Map<String, Object>> blocks = new TreeMap<>();
+        for (Identifier blockId : Registry.BLOCK.getIds()) {
+            Map<String, Object> bl = new TreeMap<>();
             Block block = Registry.BLOCK.get(blockId);
-            Map<String, Object> properties = new LinkedHashMap<>();
-            for(Property<?> prop : block.getDefaultState().getProperties()) {
-                Map<String, Object> propertyValues = new LinkedHashMap<>();
+            Map<String, Object> properties = new TreeMap<>();
+            for (Property<?> prop : block.getDefaultState().getProperties()) {
+                Map<String, Object> propertyValues = new TreeMap<>();
                 propertyValues.put("values", prop.getValues().stream().map(s -> s.toString().toLowerCase()).collect(Collectors.toList()));
                 propertyValues.put("type", getTypeName(prop.getClass()));
                 properties.put(prop.getName(), propertyValues);
@@ -91,14 +91,16 @@ public class DataVersionDumper {
             defaultState.append(blockId.toString());
             if (!block.getDefaultState().getEntries().isEmpty()) {
                 List<String> bits = new ArrayList<>();
-                block.getDefaultState().getEntries().forEach((prop, val) ->
-                    bits.add(prop.getName() + "=" + val.toString().toLowerCase())
-                );
+                block.getDefaultState().getEntries().entrySet().stream()
+                    .sorted(Comparator.comparing(e -> e.getKey().getName()))
+                    .forEach(e ->
+                        bits.add(e.getKey().getName() + "=" + e.getValue().toString().toLowerCase())
+                    );
                 defaultState.append("[").append(String.join(",", bits)).append("]");
             }
             bl.put("defaultstate", defaultState.toString());
             blocks.put(blockId.toString(), bl);
-        });
+        }
 
         // Items
         List<String> items = Registry.ITEM.getIds().stream().sorted(resourceComparator).map(Identifier::toString).collect(Collectors.toList());
@@ -119,7 +121,7 @@ public class DataVersionDumper {
         // EntityTags
         Map<String, List<String>> entityTags = getTags(tagManager.entityTypes(), Registry.ENTITY_TYPE);
 
-        Map<String, Object> output = new LinkedHashMap<>();
+        Map<String, Object> output = new TreeMap<>();
         output.put("blocks", blocks);
         output.put("items", items);
         output.put("entities", entities);

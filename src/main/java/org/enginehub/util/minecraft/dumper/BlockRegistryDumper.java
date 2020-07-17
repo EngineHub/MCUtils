@@ -24,9 +24,9 @@ import net.minecraft.world.EmptyBlockView;
 import java.io.File;
 import java.io.IOException;
 import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
@@ -56,12 +56,12 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
 
     @Override
     public Comparator<Map<String, Object>> getComparator() {
-        return new MapComparator();
+        return Comparator.comparing(map -> (String) map.get("id"));
     }
 
     @Override
     public List<Map<String, Object>> getProperties(Identifier resourceLocation, Block block) {
-        Map<String, Object> map = new LinkedHashMap<>();
+        Map<String, Object> map = new TreeMap<>();
         map.put("id", resourceLocation.toString());
         map.put("localizedName", Language.getInstance().get(block.getTranslationKey()));
         map.put("material", getMaterial(block));
@@ -70,7 +70,7 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
 
     private Map<String, Object> getMaterial(Block b) {
         BlockState bs = b.getDefaultState();
-        Map<String, Object> map = new LinkedHashMap<>();
+        Map<String, Object> map = new TreeMap<>();
         map.put("powerSource", bs.emitsRedstonePower());
         map.put("lightValue", bs.getLuminance());
         map.put("hardness", bs.getHardness(null, null));
@@ -129,13 +129,6 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
             out.value(vec.getY());
             out.value(vec.getZ());
             out.endArray();
-        }
-    }
-
-    private static class MapComparator implements Comparator<Map<String, Object>> {
-        @Override
-        public int compare(Map<String, Object> a, Map<String, Object> b) {
-            return ((String) a.get("id")).compareTo((String) b.get("id"));
         }
     }
 }

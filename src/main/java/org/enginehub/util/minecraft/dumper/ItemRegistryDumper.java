@@ -7,9 +7,9 @@ import net.minecraft.util.registry.Registry;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
@@ -31,7 +31,7 @@ public class ItemRegistryDumper extends RegistryDumper<Item> {
 
     @Override
     public Comparator<Map<String, Object>> getComparator() {
-        return new MapComparator();
+        return Comparator.comparing(map -> (String) map.get("id"));
     }
 
     public List<Map<String, Object>> getProperties(Identifier resourceLocation, Item item) {
@@ -41,20 +41,13 @@ public class ItemRegistryDumper extends RegistryDumper<Item> {
     }
 
     private Map<String, Object> getPropertiesForItem(Identifier resourceLocation, Item item) {
-        Map<String, Object> map = new LinkedHashMap<>();
+        Map<String, Object> map = new TreeMap<>();
         map.put("id", resourceLocation.toString());
         map.put("unlocalizedName", item.getTranslationKey(item.getStackForRender()));
         map.put("localizedName", item.getName(item.getStackForRender()).getString());
         map.put("maxDamage", item.getMaxDamage());
         map.put("maxStackSize", item.getMaxCount());
         return map;
-    }
-
-    private static class MapComparator implements Comparator<Map<String, Object>> {
-        @Override
-        public int compare(Map<String, Object> a, Map<String, Object> b) {
-            return ((String) a.get("id")).compareTo((String) b.get("id"));
-        }
     }
 }
 
