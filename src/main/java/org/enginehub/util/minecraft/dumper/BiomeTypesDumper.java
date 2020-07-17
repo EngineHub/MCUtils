@@ -21,7 +21,7 @@ public class BiomeTypesDumper extends RegistryClassDumper {
 
     @Override
     protected Collection<Identifier> getIds() {
-        return Registry.BLOCK.getIds();
+        return Registry.BIOME.getIds();
     }
 }
 
