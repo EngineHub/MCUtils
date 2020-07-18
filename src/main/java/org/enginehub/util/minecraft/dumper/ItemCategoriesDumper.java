@@ -1,8 +1,8 @@
 package org.enginehub.util.minecraft.dumper;
 
+import com.squareup.javapoet.ClassName;
 import net.minecraft.util.Identifier;
 
-import java.io.File;
 import java.util.Collection;
 
 import static org.enginehub.util.minecraft.util.GameSetupUtils.loadServerResources;
@@ -12,11 +12,11 @@ public class ItemCategoriesDumper extends RegistryClassDumper {
 
     public static void main(String[] args) {
         setupGame();
-        (new ItemCategoriesDumper(new File("output/itemcategories.java"))).run();
+        new ItemCategoriesDumper().run();
     }
 
-    public ItemCategoriesDumper(File file) {
-        super("ItemCategory", file);
+    public ItemCategoriesDumper() {
+        super(ClassName.get("com.sk89q.worldedit.world.item", "ItemCategory"), false);
     }
 
     @Override

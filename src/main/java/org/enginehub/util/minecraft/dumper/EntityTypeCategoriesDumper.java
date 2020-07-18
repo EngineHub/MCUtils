@@ -1,8 +1,8 @@
 package org.enginehub.util.minecraft.dumper;
 
+import com.squareup.javapoet.ClassName;
 import net.minecraft.util.Identifier;
 
-import java.io.File;
 import java.util.Collection;
 
 import static org.enginehub.util.minecraft.util.GameSetupUtils.loadServerResources;
@@ -13,11 +13,11 @@ public class EntityTypeCategoriesDumper extends RegistryClassDumper {
     // worldedit doesn't actually do entity type categories yet
     public static void main(String[] args) {
         setupGame();
-        (new EntityTypeCategoriesDumper(new File("output/entitytypecategories.java"))).run();
+        new EntityTypeCategoriesDumper().run();
     }
 
-    public EntityTypeCategoriesDumper(File file) {
-        super("EntityTypeCategory", file);
+    public EntityTypeCategoriesDumper() {
+        super(ClassName.get("com.sk89q.worldedit.world.entity", "EntityTypeCategory"), false);
     }
 
     @Override

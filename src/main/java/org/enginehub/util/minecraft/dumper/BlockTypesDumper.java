@@ -1,9 +1,9 @@
 package org.enginehub.util.minecraft.dumper;
 
+import com.squareup.javapoet.ClassName;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-import java.io.File;
 import java.util.Collection;
 
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
@@ -12,11 +12,11 @@ public class BlockTypesDumper extends RegistryClassDumper {
 
     public static void main(String[] args) {
         setupGame();
-        (new BlockTypesDumper(new File("output/blocktypes.java"))).run();
+        new BlockTypesDumper().run();
     }
 
-    public BlockTypesDumper(File file) {
-        super("BlockType", file);
+    public BlockTypesDumper() {
+        super(ClassName.get("com.sk89q.worldedit.world.block", "BlockType"), true);
     }
 
     @Override

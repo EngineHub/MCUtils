@@ -72,8 +72,6 @@ public class DataVersionDumper {
     }
 
     public void run() {
-        Comparator<Identifier> resourceComparator = Comparator.comparing(Identifier::toString);
-
         // Blocks
         Map<String, Map<String, Object>> blocks = new TreeMap<>();
         for (Identifier blockId : Registry.BLOCK.getIds()) {
@@ -103,13 +101,13 @@ public class DataVersionDumper {
         }
 
         // Items
-        List<String> items = Registry.ITEM.getIds().stream().sorted(resourceComparator).map(Identifier::toString).collect(Collectors.toList());
+        List<String> items = Registry.ITEM.getIds().stream().sorted().map(Identifier::toString).collect(Collectors.toList());
 
         // Entities
-        List<String> entities = Registry.ENTITY_TYPE.getIds().stream().sorted(resourceComparator).map(Identifier::toString).collect(Collectors.toList());
+        List<String> entities = Registry.ENTITY_TYPE.getIds().stream().sorted().map(Identifier::toString).collect(Collectors.toList());
 
         // Biomes
-        List<String> biomes = Registry.BIOME.getIds().stream().sorted(resourceComparator).map(Identifier::toString).collect(Collectors.toList());
+        List<String> biomes = Registry.BIOME.getIds().stream().sorted().map(Identifier::toString).collect(Collectors.toList());
 
         RegistryTagManager tagManager = loadServerResources().getRegistryTagManager();
         // BlockTags
