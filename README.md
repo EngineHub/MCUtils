@@ -1,4 +1,4 @@
 # MCUtils
-Replacement library for ForgeUtils. Runs in an IDE and currently uses MCPConfig
+Replacement library for ForgeUtils. Runs in an IDE and uses the magic of Fabric.
 
-To use this, import the project into an IDE, and place a remapped Minecraft jar from MCPConfig into the mapped_jars folder.
+To use this, import the project into an IDE, then run the dumper of your choice.
