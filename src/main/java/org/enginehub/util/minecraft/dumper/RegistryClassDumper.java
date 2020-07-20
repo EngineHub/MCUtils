@@ -95,11 +95,11 @@ public abstract class RegistryClassDumper implements Dumper {
                 name,
                 PUBLIC, STATIC, FINAL
             );
-            if (nullable) {
-                fieldBuilder.addAnnotation(JAVAX_NULLABLE);
-            }
             if (deprecatedIds.contains(resourceLocation)) {
                 fieldBuilder.addAnnotation(Deprecated.class);
+            }
+            if (nullable) {
+                fieldBuilder.addAnnotation(JAVAX_NULLABLE);
             }
             fieldBuilder.initializer("get($S)", resourceLocation);
             builder.addField(fieldBuilder.build());
