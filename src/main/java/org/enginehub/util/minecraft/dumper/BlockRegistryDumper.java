@@ -1,5 +1,6 @@
 package org.enginehub.util.minecraft.dumper;
 
+import com.google.auto.service.AutoService;
 import com.google.common.collect.Lists;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
@@ -34,7 +35,15 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
 
     public static void main(String[] args) {
         setupGame();
-        (new BlockRegistryDumper(new File("output/blocks.json"))).run();
+        new Default().run();
+    }
+
+    @AutoService(Dumper.class)
+    public static class Default implements Dumper {
+        @Override
+        public void run() {
+            new BlockRegistryDumper(new File("output/blocks.json")).run();
+        }
     }
 
     public BlockRegistryDumper(File file) {

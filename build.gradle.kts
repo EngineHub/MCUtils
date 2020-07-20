@@ -16,4 +16,8 @@ dependencies {
     "modImplementation"("net.fabricmc:fabric-loader:0.9.0+build.204")
 
     "implementation"("com.squareup:javapoet:1.13.0")
+
+    val autoServiceVersion = "1.0-rc7"
+    "compileOnly"("com.google.auto.service:auto-service-annotations:$autoServiceVersion")
+    "annotationProcessor"("com.google.auto.service:auto-service:$autoServiceVersion")
 }

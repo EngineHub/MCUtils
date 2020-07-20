@@ -27,7 +27,7 @@ import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
-public abstract class RegistryClassDumper {
+public abstract class RegistryClassDumper implements Dumper {
 
     private static final ClassName JAVAX_NULLABLE =
         ClassName.get("javax.annotation", "Nullable");
@@ -66,6 +66,7 @@ public abstract class RegistryClassDumper {
         return Collections.emptySet();
     }
 
+    @Override
     public void run() {
         Set<Identifier> deprecatedIds = ImmutableSortedSet.copyOf(getDeprecatedIds());
         Set<Identifier> resources = ImmutableSortedSet

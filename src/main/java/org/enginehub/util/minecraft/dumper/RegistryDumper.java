@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-abstract class RegistryDumper<V> {
+abstract class RegistryDumper<V> implements Dumper {
 
     private final File file;
     private final Gson gson;
@@ -31,6 +31,7 @@ abstract class RegistryDumper<V> {
 
     }
 
+    @Override
     public void run() {
         Registry<V> registry = getRegistry();
         ImmutableList<Map<String, Object>> list = ImmutableList.sortedCopyOf(

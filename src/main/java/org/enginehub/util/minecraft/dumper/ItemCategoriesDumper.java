@@ -1,13 +1,15 @@
 package org.enginehub.util.minecraft.dumper;
 
+import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
 import net.minecraft.util.Identifier;
 
 import java.util.Collection;
 
-import static org.enginehub.util.minecraft.util.GameSetupUtils.loadServerResources;
+import static org.enginehub.util.minecraft.util.GameSetupUtils.getServerResources;
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
+@AutoService(Dumper.class)
 public class ItemCategoriesDumper extends RegistryClassDumper {
 
     public static void main(String[] args) {
@@ -21,7 +23,7 @@ public class ItemCategoriesDumper extends RegistryClassDumper {
 
     @Override
     protected Collection<Identifier> getIds() {
-        return loadServerResources().getRegistryTagManager().items().getKeys();
+        return getServerResources().getRegistryTagManager().items().getKeys();
     }
 }
 

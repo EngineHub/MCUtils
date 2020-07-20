@@ -1,5 +1,6 @@
 package org.enginehub.util.minecraft.dumper;
 
+import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
 import com.squareup.javapoet.ClassName;
 import net.minecraft.util.Identifier;
@@ -9,6 +10,7 @@ import java.util.Collection;
 
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
+@AutoService(Dumper.class)
 public class BiomeTypesDumper extends RegistryClassDumper {
 
     public static void main(String[] args) {
@@ -28,7 +30,7 @@ public class BiomeTypesDumper extends RegistryClassDumper {
     @Override
     protected Collection<Identifier> getDeprecatedIds() {
         return ImmutableSet.of(
-            new Identifier("minecraft", "nether")
+            new Identifier("nether")
         );
     }
 }

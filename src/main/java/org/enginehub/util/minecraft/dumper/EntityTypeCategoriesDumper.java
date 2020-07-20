@@ -1,13 +1,15 @@
 package org.enginehub.util.minecraft.dumper;
 
+import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
 import net.minecraft.util.Identifier;
 
 import java.util.Collection;
 
-import static org.enginehub.util.minecraft.util.GameSetupUtils.loadServerResources;
+import static org.enginehub.util.minecraft.util.GameSetupUtils.getServerResources;
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
+@AutoService(Dumper.class)
 public class EntityTypeCategoriesDumper extends RegistryClassDumper {
 
     // worldedit doesn't actually do entity type categories yet
@@ -22,7 +24,7 @@ public class EntityTypeCategoriesDumper extends RegistryClassDumper {
 
     @Override
     protected Collection<Identifier> getIds() {
-        return loadServerResources().getRegistryTagManager().entityTypes().getKeys();
+        return getServerResources().getRegistryTagManager().entityTypes().getKeys();
     }
 }
 

@@ -1,5 +1,6 @@
 package org.enginehub.util.minecraft.dumper;
 
+import com.google.auto.service.AutoService;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -17,7 +18,15 @@ public class ItemRegistryDumper extends RegistryDumper<Item> {
 
     public static void main(String[] args) {
         setupGame();
-        (new ItemRegistryDumper(new File("output/items.json"))).run();
+        new Default().run();
+    }
+
+    @AutoService(Dumper.class)
+    public static class Default implements Dumper {
+        @Override
+        public void run() {
+            new ItemRegistryDumper(new File("output/items.json")).run();
+        }
     }
 
     public ItemRegistryDumper(File file) {

@@ -1,14 +1,16 @@
 package org.enginehub.util.minecraft.dumper;
 
+import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
 import com.squareup.javapoet.ClassName;
 import net.minecraft.util.Identifier;
 
 import java.util.Collection;
 
-import static org.enginehub.util.minecraft.util.GameSetupUtils.loadServerResources;
+import static org.enginehub.util.minecraft.util.GameSetupUtils.getServerResources;
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
+@AutoService(Dumper.class)
 public class BlockCategoriesDumper extends RegistryClassDumper {
 
     public static void main(String[] args) {
@@ -22,13 +24,13 @@ public class BlockCategoriesDumper extends RegistryClassDumper {
 
     @Override
     protected Collection<Identifier> getIds() {
-        return loadServerResources().getRegistryTagManager().blocks().getKeys();
+        return getServerResources().getRegistryTagManager().blocks().getKeys();
     }
 
     @Override
     protected Collection<Identifier> getDeprecatedIds() {
         return ImmutableSet.of(
-            new Identifier("minecraft", "dirt_like")
+            new Identifier("dirt_like")
         );
     }
 }

@@ -1,5 +1,6 @@
 package org.enginehub.util.minecraft.dumper;
 
+import com.google.auto.service.AutoService;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -26,14 +27,23 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.enginehub.util.minecraft.util.GameSetupUtils.loadServerResources;
+import static org.enginehub.util.minecraft.util.GameSetupUtils.getServerResources;
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
-public class DataVersionDumper {
+public class DataVersionDumper implements Dumper {
 
     public static void main(String[] args) {
         setupGame();
-        (new DataVersionDumper(new File("output/" + SharedConstants.getGameVersion().getWorldVersion() + ".json"))).run();
+        new Default().run();
+    }
+
+    @AutoService(Dumper.class)
+    public static class Default implements Dumper {
+        @Override
+        public void run() {
+            File file = new File("output/" + SharedConstants.getGameVersion().getWorldVersion() + ".json");
+            new DataVersionDumper(file).run();
+        }
     }
 
     private final File file;
@@ -71,6 +81,7 @@ public class DataVersionDumper {
         }
     }
 
+    @Override
     public void run() {
         // Blocks
         Map<String, Map<String, Object>> blocks = new TreeMap<>();
@@ -109,7 +120,7 @@ public class DataVersionDumper {
         // Biomes
         List<String> biomes = Registry.BIOME.getIds().stream().sorted().map(Identifier::toString).collect(Collectors.toList());
 
-        RegistryTagManager tagManager = loadServerResources().getRegistryTagManager();
+        RegistryTagManager tagManager = getServerResources().getRegistryTagManager();
         // BlockTags
         Map<String, List<String>> blockTags = getTags(tagManager.blocks(), Registry.BLOCK);
 
