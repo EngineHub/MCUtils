@@ -1,6 +1,7 @@
 package org.enginehub.util.minecraft.dumper;
 
 import com.google.auto.service.AutoService;
+import com.google.common.collect.ImmutableSet;
 import com.squareup.javapoet.ClassName;
 import net.minecraft.util.Identifier;
 
@@ -23,7 +24,12 @@ public class ItemCategoriesDumper extends RegistryClassDumper {
 
     @Override
     protected Collection<Identifier> getIds() {
-        return getServerResources().getRegistryTagManager().items().getKeys();
+        return getServerResources().getRegistryTagManager().getItems().getTagIds();
+    }
+
+    @Override
+    protected Collection<Identifier> getDeprecatedIds() {
+        return ImmutableSet.of(new Identifier("furnace_materials"));
     }
 }
 

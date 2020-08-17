@@ -24,7 +24,7 @@ public class EntityTypeCategoriesDumper extends RegistryClassDumper {
 
     @Override
     protected Collection<Identifier> getIds() {
-        return getServerResources().getRegistryTagManager().entityTypes().getKeys();
+        return getServerResources().getRegistryTagManager().getEntityTypes().getTagIds();
     }
 }
 

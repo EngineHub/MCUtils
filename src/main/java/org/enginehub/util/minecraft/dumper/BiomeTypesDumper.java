@@ -8,6 +8,7 @@ import net.minecraft.util.registry.Registry;
 
 import java.util.Collection;
 
+import static org.enginehub.util.minecraft.util.GameSetupUtils.getServerRegistry;
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
 @AutoService(Dumper.class)
@@ -24,7 +25,7 @@ public class BiomeTypesDumper extends RegistryClassDumper {
 
     @Override
     protected Collection<Identifier> getIds() {
-        return Registry.BIOME.getIds();
+        return getServerRegistry().get(Registry.BIOME_KEY).getIds();
     }
 
     @Override

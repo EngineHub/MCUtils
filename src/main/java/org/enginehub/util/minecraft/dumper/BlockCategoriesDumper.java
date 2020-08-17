@@ -24,7 +24,7 @@ public class BlockCategoriesDumper extends RegistryClassDumper {
 
     @Override
     protected Collection<Identifier> getIds() {
-        return getServerResources().getRegistryTagManager().blocks().getKeys();
+        return getServerResources().getRegistryTagManager().getBlocks().getTagIds();
     }
 
     @Override

@@ -11,8 +11,8 @@ import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.state.property.Property;
-import net.minecraft.tag.RegistryTagManager;
-import net.minecraft.tag.TagContainer;
+import net.minecraft.tag.TagGroup;
+import net.minecraft.tag.TagManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -27,6 +27,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.enginehub.util.minecraft.util.GameSetupUtils.getServerRegistry;
 import static org.enginehub.util.minecraft.util.GameSetupUtils.getServerResources;
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
@@ -53,10 +54,10 @@ public class DataVersionDumper implements Dumper {
         this.file = file;
     }
 
-    private <T> Map<String, List<String>> getTags(TagContainer<T> provider, Registry<T> registry) {
+    private <T> Map<String, List<String>> getTags(TagGroup<T> provider, Registry<T> registry) {
         Map<String, List<String>> tagCollector = new TreeMap<>();
 
-        provider.getEntries().forEach((key, value) ->
+        provider.getTags().forEach((key, value) ->
             tagCollector.put(key.toString(), value.values().stream()
                 .map(entry -> checkNotNull(registry.getId(entry)))
                 .map(Identifier::toString)
@@ -118,17 +119,17 @@ public class DataVersionDumper implements Dumper {
         List<String> entities = Registry.ENTITY_TYPE.getIds().stream().sorted().map(Identifier::toString).collect(Collectors.toList());
 
         // Biomes
-        List<String> biomes = Registry.BIOME.getIds().stream().sorted().map(Identifier::toString).collect(Collectors.toList());
+        List<String> biomes = getServerRegistry().get(Registry.BIOME_KEY).getIds().stream().sorted().map(Identifier::toString).collect(Collectors.toList());
 
-        RegistryTagManager tagManager = getServerResources().getRegistryTagManager();
+        TagManager tagManager = getServerResources().getRegistryTagManager();
         // BlockTags
-        Map<String, List<String>> blockTags = getTags(tagManager.blocks(), Registry.BLOCK);
+        Map<String, List<String>> blockTags = getTags(tagManager.getBlocks(), Registry.BLOCK);
 
         // ItemTags
-        Map<String, List<String>> itemTags = getTags(tagManager.items(), Registry.ITEM);
+        Map<String, List<String>> itemTags = getTags(tagManager.getItems(), Registry.ITEM);
 
         // EntityTags
-        Map<String, List<String>> entityTags = getTags(tagManager.entityTypes(), Registry.ENTITY_TYPE);
+        Map<String, List<String>> entityTags = getTags(tagManager.getEntityTypes(), Registry.ENTITY_TYPE);
 
         Map<String, Object> output = new TreeMap<>();
         output.put("blocks", blocks);

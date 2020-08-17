@@ -9,6 +9,7 @@ import net.minecraft.resource.ServerResourceManager;
 import net.minecraft.resource.VanillaDataPackProvider;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
+import net.minecraft.util.registry.DynamicRegistryManager;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
@@ -23,6 +24,7 @@ public final class GameSetupUtils {
 
     private static final Lock lock = new ReentrantLock();
     private static ServerResourceManager SERVER_RESOURCES;
+    private static DynamicRegistryManager SERVER_REGISTRY;
 
     public static ServerResourceManager getServerResources() {
         setupGame();
@@ -32,7 +34,7 @@ public final class GameSetupUtils {
             if (localResources != null) {
                 return localResources;
             }
-            ResourcePackManager<ResourcePackProfile> resourcePackManager = new ResourcePackManager<>(
+            ResourcePackManager resourcePackManager = new ResourcePackManager(
                 ResourcePackProfile::new,
                 new VanillaDataPackProvider()
             );
@@ -48,6 +50,21 @@ public final class GameSetupUtils {
             ServerResourceManager manager = Futures.getUnchecked(completableFuture);
             manager.loadRegistryTags();
             SERVER_RESOURCES = manager;
+            return manager;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public static DynamicRegistryManager getServerRegistry() {
+        lock.lock();
+        try {
+            DynamicRegistryManager localResources = SERVER_REGISTRY;
+            if (localResources != null) {
+                return localResources;
+            }
+            DynamicRegistryManager manager = DynamicRegistryManager.create();
+            SERVER_REGISTRY = manager;
             return manager;
         } finally {
             lock.unlock();
