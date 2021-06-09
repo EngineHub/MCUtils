@@ -123,13 +123,13 @@ public class DataVersionDumper implements Dumper {
 
         TagManager tagManager = getServerResources().getRegistryTagManager();
         // BlockTags
-        Map<String, List<String>> blockTags = getTags(tagManager.getBlocks(), Registry.BLOCK);
+        Map<String, List<String>> blockTags = getTags(tagManager.getOrCreateTagGroup(Registry.BLOCK_KEY), Registry.BLOCK);
 
         // ItemTags
-        Map<String, List<String>> itemTags = getTags(tagManager.getItems(), Registry.ITEM);
+        Map<String, List<String>> itemTags = getTags(tagManager.getOrCreateTagGroup(Registry.ITEM_KEY), Registry.ITEM);
 
         // EntityTags
-        Map<String, List<String>> entityTags = getTags(tagManager.getEntityTypes(), Registry.ENTITY_TYPE);
+        Map<String, List<String>> entityTags = getTags(tagManager.getOrCreateTagGroup(Registry.ENTITY_TYPE_KEY), Registry.ENTITY_TYPE);
 
         Map<String, Object> output = new TreeMap<>();
         output.put("blocks", blocks);

@@ -52,8 +52,8 @@ public class ItemRegistryDumper extends RegistryDumper<Item> {
     private Map<String, Object> getPropertiesForItem(Identifier resourceLocation, Item item) {
         Map<String, Object> map = new TreeMap<>();
         map.put("id", resourceLocation.toString());
-        map.put("unlocalizedName", item.getTranslationKey(item.getStackForRender()));
-        map.put("localizedName", item.getName(item.getStackForRender()).getString());
+        map.put("unlocalizedName", item.getTranslationKey(item.getDefaultStack()));
+        map.put("localizedName", item.getName(item.getDefaultStack()).getString());
         map.put("maxDamage", item.getMaxDamage());
         map.put("maxStackSize", item.getMaxCount());
         return map;

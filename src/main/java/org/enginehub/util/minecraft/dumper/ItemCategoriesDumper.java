@@ -4,6 +4,7 @@ import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
 import com.squareup.javapoet.ClassName;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 import java.util.Collection;
 
@@ -24,7 +25,7 @@ public class ItemCategoriesDumper extends RegistryClassDumper {
 
     @Override
     protected Collection<Identifier> getIds() {
-        return getServerResources().getRegistryTagManager().getItems().getTagIds();
+        return getServerResources().getRegistryTagManager().getOrCreateTagGroup(Registry.ITEM_KEY).getTagIds();
     }
 
     @Override

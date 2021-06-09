@@ -100,12 +100,11 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
         map.put("unpushable", m.getPistonBehavior() == PistonBehavior.BLOCK);
         map.put("mapColor", rgb(m.getColor().color));
         map.put("hasContainer", b instanceof BlockEntityProvider &&
-            (((BlockEntityProvider) b).createBlockEntity(EmptyBlockView.INSTANCE) instanceof Clearable));
+            (((BlockEntityProvider) b).createBlockEntity(BlockPos.ORIGIN, bs) instanceof Clearable));
         return map;
     }
 
-    // method_29968 -> adds one to get max
-    private static final Box FULL_CUBE = Box.method_29968(Vec3d.ZERO);
+    private static final Box FULL_CUBE = Box.from(Vec3d.ZERO);
 
     private boolean isFullCube(Box aabb) {
         return aabb.equals(FULL_CUBE);

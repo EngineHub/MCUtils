@@ -2,11 +2,8 @@ package org.enginehub.util.minecraft.util;
 
 import com.google.common.util.concurrent.Futures;
 import net.minecraft.Bootstrap;
-import net.minecraft.resource.DataPackSettings;
-import net.minecraft.resource.ResourcePackManager;
-import net.minecraft.resource.ResourcePackProfile;
-import net.minecraft.resource.ServerResourceManager;
-import net.minecraft.resource.VanillaDataPackProvider;
+import net.minecraft.SharedConstants;
+import net.minecraft.resource.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.util.registry.DynamicRegistryManager;
@@ -19,6 +16,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public final class GameSetupUtils {
 
     public static void setupGame() {
+        SharedConstants.createGameVersion();
         Bootstrap.initialize();
     }
 
@@ -35,12 +33,14 @@ public final class GameSetupUtils {
                 return localResources;
             }
             ResourcePackManager resourcePackManager = new ResourcePackManager(
-                ResourcePackProfile::new,
+                ResourceType.SERVER_DATA,
                 new VanillaDataPackProvider()
             );
             MinecraftServer.loadDataPacks(resourcePackManager, DataPackSettings.SAFE_MODE, true);
+            DynamicRegistryManager.Impl impl = DynamicRegistryManager.create();
             CompletableFuture<ServerResourceManager> completableFuture = ServerResourceManager.reload(
                 resourcePackManager.createResourcePacks(),
+                impl,
                 CommandManager.RegistrationEnvironment.DEDICATED,
                 // permission level doesn't matter
                 0,

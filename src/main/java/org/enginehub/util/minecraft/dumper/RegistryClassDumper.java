@@ -89,7 +89,7 @@ public abstract class RegistryClassDumper implements Dumper {
             .build());
         builder.addMethod(createGetMethod());
         for (Identifier resourceLocation : resources) {
-            String name = resourceLocation.getPath().toUpperCase();
+            String name = resourceLocation.getPath().toUpperCase().replace('/', '_');
             FieldSpec.Builder fieldBuilder = FieldSpec.builder(
                 type,
                 name,
