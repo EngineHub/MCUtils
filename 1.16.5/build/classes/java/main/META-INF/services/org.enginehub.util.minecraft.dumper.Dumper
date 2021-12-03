@@ -1,0 +1,10 @@
+org.enginehub.util.minecraft.dumper.BiomeTypesDumper
+org.enginehub.util.minecraft.dumper.BlockCategoriesDumper
+org.enginehub.util.minecraft.dumper.BlockRegistryDumper$Default
+org.enginehub.util.minecraft.dumper.BlockTypesDumper
+org.enginehub.util.minecraft.dumper.DataVersionDumper$Default
+org.enginehub.util.minecraft.dumper.EntityTypeCategoriesDumper
+org.enginehub.util.minecraft.dumper.EntityTypesDumper
+org.enginehub.util.minecraft.dumper.ItemCategoriesDumper
+org.enginehub.util.minecraft.dumper.ItemRegistryDumper$Default
+org.enginehub.util.minecraft.dumper.ItemTypesDumper
