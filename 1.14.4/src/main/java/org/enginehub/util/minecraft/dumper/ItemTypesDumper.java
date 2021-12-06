@@ -33,9 +33,7 @@ public class ItemTypesDumper extends RegistryClassDumper {
                 new Identifier("cactus_green"),
                 new Identifier("dandelion_yellow"),
                 new Identifier("rose_red"),
-                new Identifier("sign"),
-                new Identifier("zombie_pigman_spawn_egg"),
-                new Identifier("grass_path")
+                new Identifier("sign")
         );
     }
 }

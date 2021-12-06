@@ -26,11 +26,4 @@ public class EntityTypesDumper extends RegistryClassDumper {
     protected Collection<Identifier> getIds() {
         return Registry.ENTITY_TYPE.getIds();
     }
-
-    @Override
-    protected Collection<Identifier> getDeprecatedIds() {
-        return ImmutableSet.of(
-                new Identifier("zombie_pigman")
-        );
-    }
 }

@@ -26,9 +26,4 @@ public class BlockCategoriesDumper extends RegistryClassDumper {
     protected Collection<Identifier> getIds() {
         return Registry.BLOCK.getIds();
     }
-
-    @Override
-    protected Collection<Identifier> getDeprecatedIds() {
-        return ImmutableSet.of(new Identifier("dirt_like"));
-    }
 }

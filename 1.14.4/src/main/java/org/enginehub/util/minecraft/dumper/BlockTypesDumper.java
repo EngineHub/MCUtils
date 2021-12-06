@@ -31,8 +31,7 @@ public class BlockTypesDumper extends RegistryClassDumper {
     protected Collection<Identifier> getDeprecatedIds() {
         return ImmutableSet.of(
                 new Identifier("sign"),
-                new Identifier("wall_sign"),
-                new Identifier("grass_path")
+                new Identifier("wall_sign")
         );
     }
 }

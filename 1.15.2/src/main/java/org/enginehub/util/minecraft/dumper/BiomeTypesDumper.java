@@ -26,9 +26,4 @@ public class BiomeTypesDumper extends RegistryClassDumper {
     protected Collection<Identifier> getIds() {
         return Registry.BIOME.getIds();
     }
-
-    @Override
-    protected Collection<Identifier> getDeprecatedIds() {
-        return ImmutableSet.of(new Identifier("nether"));
-    }
 }

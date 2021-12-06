@@ -26,9 +26,4 @@ public class ItemCategoriesDumper extends RegistryClassDumper {
     protected Collection<Identifier> getIds() {
         return Registry.ITEM.getIds();
     }
-
-    @Override
-    protected Collection<Identifier> getDeprecatedIds() {
-        return ImmutableSet.of(new Identifier("furnace_materials"));
-    }
 }
