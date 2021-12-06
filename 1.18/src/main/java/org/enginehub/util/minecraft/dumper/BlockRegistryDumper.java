@@ -14,10 +14,14 @@ import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.util.Clearable;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.EmptyBlockView;
+import org.enginehub.util.minecraft.RunAll;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +34,7 @@ import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
 public class BlockRegistryDumper extends RegistryDumper<Block> {
 
-    private static final Box FULL_CUBE = Box.from(BlockBox.empty());
+    private static final Box FULL_CUBE = Box.from(Vec3d.ZERO);
 
     public BlockRegistryDumper(File file) {
         super(file);
@@ -63,7 +67,7 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
     public List<Map<String, Object>> getProperties(Identifier resourceLocation, Block block) {
         Map<String, Object> map = new TreeMap<>();
         map.put("id", resourceLocation.toString());
-        map.put("localizedName", Language.getInstance().translate(block.getTranslationKey()));
+        map.put("localizedName", Language.getInstance().get(block.getTranslationKey()));
         map.put("material", getMaterial(block));
         return Lists.newArrayList(map);
     }
@@ -87,12 +91,12 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
         map.put("burnable", m.isBurnable());
         map.put("opaque", m.blocksLight());
         map.put("replacedDuringPlacement", m.isReplaceable());
-        map.put("toolRequired", !m.canBreakByHand());
+        map.put("toolRequired", bs.isToolRequired());
         map.put("fragileWhenPushed", m.getPistonBehavior() == PistonBehavior.DESTROY);
         map.put("unpushable", m.getPistonBehavior() == PistonBehavior.BLOCK);
         map.put("mapColor", rgb(m.getColor().color));
         map.put("hasContainer", b instanceof BlockEntityProvider bep &&
-                bep.createBlockEntity(EmptyBlockView.INSTANCE) instanceof Clearable);
+                bep.createBlockEntity(BlockPos.ORIGIN, bs) instanceof Clearable);
         return map;
     }
 

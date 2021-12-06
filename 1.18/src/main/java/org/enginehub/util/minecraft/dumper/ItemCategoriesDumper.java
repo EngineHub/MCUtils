@@ -8,6 +8,7 @@ import net.minecraft.util.registry.Registry;
 
 import java.util.Collection;
 
+import static org.enginehub.util.minecraft.util.GameSetupUtils.getServerResources;
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
 @AutoService(Dumper.class)
@@ -24,7 +25,7 @@ public class ItemCategoriesDumper extends RegistryClassDumper {
 
     @Override
     protected Collection<Identifier> getIds() {
-        return Registry.ITEM.getIds();
+        return getServerResources().getRegistryTagManager().getOrCreateTagGroup(Registry.ITEM_KEY).getTagIds();
     }
 
     @Override

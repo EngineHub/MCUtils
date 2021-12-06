@@ -11,15 +11,15 @@ import java.util.Collection;
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
 @AutoService(Dumper.class)
-public class ItemCategoriesDumper extends RegistryClassDumper {
+public class ItemTypesDumper extends RegistryClassDumper {
 
     public static void main(String[] args) {
         setupGame();
-        new ItemCategoriesDumper().run();
+        new ItemTypesDumper().run();
     }
 
-    public ItemCategoriesDumper() {
-        super(ClassName.get("com.sk89q.worldedit.world.item", "ItemCategory"), false);
+    public ItemTypesDumper() {
+        super(ClassName.get("com.sk89q.worldedit.world.item", "ItemType"), true);
     }
 
     @Override
@@ -29,6 +29,13 @@ public class ItemCategoriesDumper extends RegistryClassDumper {
 
     @Override
     protected Collection<Identifier> getDeprecatedIds() {
-        return ImmutableSet.of(new Identifier("furnace_materials"));
+        return ImmutableSet.of(
+            new Identifier("cactus_green"),
+            new Identifier("dandelion_yellow"),
+            new Identifier("rose_red"),
+            new Identifier("sign"),
+            new Identifier("zombie_pigman_spawn_egg"),
+            new Identifier("grass_path")
+        );
     }
 }

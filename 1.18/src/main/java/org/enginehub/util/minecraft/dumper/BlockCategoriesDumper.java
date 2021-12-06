@@ -8,27 +8,32 @@ import net.minecraft.util.registry.Registry;
 
 import java.util.Collection;
 
+import static org.enginehub.util.minecraft.util.GameSetupUtils.getServerResources;
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
 @AutoService(Dumper.class)
-public class ItemCategoriesDumper extends RegistryClassDumper {
+public class BlockCategoriesDumper extends RegistryClassDumper {
 
     public static void main(String[] args) {
         setupGame();
-        new ItemCategoriesDumper().run();
+        new BlockCategoriesDumper().run();
     }
 
-    public ItemCategoriesDumper() {
-        super(ClassName.get("com.sk89q.worldedit.world.item", "ItemCategory"), false);
+    public BlockCategoriesDumper() {
+        super(ClassName.get("com.sk89q.worldedit.world.block", "BlockCategory"), false);
     }
 
     @Override
     protected Collection<Identifier> getIds() {
-        return Registry.ITEM.getIds();
+        return getServerResources().getRegistryTagManager().getOrCreateTagGroup(
+            Registry.BLOCK_KEY
+        ).getTagIds();
     }
 
     @Override
     protected Collection<Identifier> getDeprecatedIds() {
-        return ImmutableSet.of(new Identifier("furnace_materials"));
+        return ImmutableSet.of(
+            new Identifier("dirt_like")
+        );
     }
 }

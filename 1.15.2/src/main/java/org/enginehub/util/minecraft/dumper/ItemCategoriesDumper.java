@@ -32,4 +32,3 @@ public class ItemCategoriesDumper extends RegistryClassDumper {
         return ImmutableSet.of(new Identifier("furnace_materials"));
     }
 }
-

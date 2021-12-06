@@ -7,8 +7,8 @@ group = "org.enginehub"
 version = "1.0.0-SNAPSHOT"
 
 dependencies {
-    minecraft("com.mojang:minecraft:1.16.5")
-    mappings("net.fabricmc:yarn:1.16.5+build.2:v2")
+    minecraft("com.mojang:minecraft:1.18")
+    mappings("net.fabricmc:yarn:1.18+build.1:v2")
     modImplementation("net.fabricmc:fabric-loader:${project.property("fabric_loader.version")}")
     implementation("com.squareup:javapoet:${project.property("javapoet.version")}")
     compileOnly("com.google.auto.service:auto-service-annotations:${project.property("autoservice.version")}")
