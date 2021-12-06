@@ -2,11 +2,7 @@ package org.enginehub.util.minecraft.util;
 
 import com.google.common.util.concurrent.Futures;
 import net.minecraft.Bootstrap;
-import net.minecraft.resource.DataPackSettings;
-import net.minecraft.resource.ResourcePackManager;
-import net.minecraft.resource.ResourcePackProfile;
-import net.minecraft.resource.ServerResourceManager;
-import net.minecraft.resource.VanillaDataPackProvider;
+import net.minecraft.resource.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.util.registry.DynamicRegistryManager;

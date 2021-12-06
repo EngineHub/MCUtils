@@ -25,15 +25,13 @@ public class BlockCategoriesDumper extends RegistryClassDumper {
 
     @Override
     protected Collection<Identifier> getIds() {
-        return getServerResources().getRegistryTagManager().getOrCreateTagGroup(
-            Registry.BLOCK_KEY
-        ).getTagIds();
+        return getServerResources().getRegistryTagManager().getOrCreateTagGroup(Registry.BLOCK_KEY).getTagIds();
     }
 
     @Override
     protected Collection<Identifier> getDeprecatedIds() {
         return ImmutableSet.of(
-            new Identifier("dirt_like")
+                new Identifier("dirt_like")
         );
     }
 }

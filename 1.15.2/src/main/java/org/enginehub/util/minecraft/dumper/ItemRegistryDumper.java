@@ -39,6 +39,7 @@ public class ItemRegistryDumper extends RegistryDumper<Item> {
         return Comparator.comparing(map -> (String) map.get("id"));
     }
 
+    @Override
     public List<Map<String, Object>> getProperties(Identifier resourceLocation, Item item) {
         List<Map<String, Object>> maps = new ArrayList<>();
         maps.add(getPropertiesForItem(resourceLocation, item));

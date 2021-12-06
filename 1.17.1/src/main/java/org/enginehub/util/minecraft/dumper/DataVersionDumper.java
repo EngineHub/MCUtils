@@ -6,31 +6,20 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.SharedConstants;
 import net.minecraft.block.Block;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.state.property.EnumProperty;
-import net.minecraft.state.property.IntProperty;
-import net.minecraft.state.property.Property;
+import net.minecraft.state.property.*;
 import net.minecraft.tag.TagGroup;
 import net.minecraft.tag.TagManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import org.enginehub.util.minecraft.RunAll;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.enginehub.util.minecraft.util.GameSetupUtils.getServerRegistry;
-import static org.enginehub.util.minecraft.util.GameSetupUtils.getServerResources;
-import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
+import static org.enginehub.util.minecraft.util.GameSetupUtils.*;
 
 public class DataVersionDumper implements Dumper {
 

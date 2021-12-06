@@ -3,8 +3,9 @@ package org.enginehub.util.minecraft.dumper;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
 import com.squareup.javapoet.ClassName;
+import net.minecraft.tag.BlockTags;
+import net.minecraft.tag.RegistryTagManager;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 import java.util.Collection;
 
@@ -24,11 +25,13 @@ public class BlockCategoriesDumper extends RegistryClassDumper {
 
     @Override
     protected Collection<Identifier> getIds() {
-        return Registry.BLOCK.getIds();
+        return BlockTags.getContainer().getKeys();
     }
 
     @Override
     protected Collection<Identifier> getDeprecatedIds() {
-        return ImmutableSet.of(new Identifier("dirt_like"));
+        return ImmutableSet.of(
+                new Identifier("dirt_like")
+        );
     }
 }

@@ -1,15 +1,16 @@
 package org.enginehub.util.minecraft.dumper;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableSet;
 import com.squareup.javapoet.ClassName;
+import net.minecraft.tag.BlockTags;
+import net.minecraft.tag.RegistryTagManager;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 import java.util.Collection;
 
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
+// TODO Get the 1.14.4 and 1.15.2 Category dumpers to work
 @AutoService(Dumper.class)
 public class BlockCategoriesDumper extends RegistryClassDumper {
 
@@ -24,6 +25,6 @@ public class BlockCategoriesDumper extends RegistryClassDumper {
 
     @Override
     protected Collection<Identifier> getIds() {
-        return Registry.BLOCK.getIds();
+        return BlockTags.getContainer().getKeys();
     }
 }

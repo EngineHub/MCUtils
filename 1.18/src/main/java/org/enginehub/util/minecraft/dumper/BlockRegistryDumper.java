@@ -21,7 +21,6 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.EmptyBlockView;
-import org.enginehub.util.minecraft.RunAll;
 
 import java.io.File;
 import java.io.IOException;
@@ -95,8 +94,7 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
         map.put("fragileWhenPushed", m.getPistonBehavior() == PistonBehavior.DESTROY);
         map.put("unpushable", m.getPistonBehavior() == PistonBehavior.BLOCK);
         map.put("mapColor", rgb(m.getColor().color));
-        map.put("hasContainer", b instanceof BlockEntityProvider bep &&
-                bep.createBlockEntity(BlockPos.ORIGIN, bs) instanceof Clearable);
+        map.put("hasContainer", b instanceof BlockEntityProvider bep && bep.createBlockEntity(BlockPos.ORIGIN, bs) instanceof Clearable);
         return map;
     }
 

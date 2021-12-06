@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,7 +23,7 @@ abstract class RegistryDumper<V> implements Dumper {
         this.file = file;
         GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
         registerAdapters(builder);
-        this.gson = builder.create();
+        gson = builder.create();
     }
 
     public void registerAdapters(GsonBuilder builder) {
@@ -42,12 +41,12 @@ abstract class RegistryDumper<V> implements Dumper {
         );
 
         String out = gson.toJson(list);
-        this.write(out);
+        write(out);
         System.out.println("Wrote file: " + file.getAbsolutePath());
     }
 
     private void write(String s) {
-        try(FileOutputStream str = new FileOutputStream(file)) {
+        try (FileOutputStream str = new FileOutputStream(file)) {
             str.write(s.getBytes());
         } catch (IOException e) {
             System.err.println("Error writing registry dump: ");
@@ -56,8 +55,8 @@ abstract class RegistryDumper<V> implements Dumper {
     }
 
     protected String rgb(int i) {
-        int r = (i >> 16) & 0xFF;
-        int g = (i >>  8) & 0xFF;
+        int r = i >> 16 & 0xFF;
+        int g = i >>  8 & 0xFF;
         int b = i & 0xFF;
         return String.format("#%02x%02x%02x", r, g, b);
     }

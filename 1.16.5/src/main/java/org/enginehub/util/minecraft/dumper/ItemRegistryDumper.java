@@ -4,14 +4,9 @@ import com.google.auto.service.AutoService;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import org.enginehub.util.minecraft.RunAll;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
@@ -44,6 +39,7 @@ public class ItemRegistryDumper extends RegistryDumper<Item> {
         return Comparator.comparing(map -> (String) map.get("id"));
     }
 
+    @Override
     public List<Map<String, Object>> getProperties(Identifier resourceLocation, Item item) {
         List<Map<String, Object>> maps = new ArrayList<>();
         maps.add(getPropertiesForItem(resourceLocation, item));

@@ -32,6 +32,17 @@ public class BiomeTypesDumper extends RegistryClassDumper {
     protected Collection<Identifier> getDeprecatedIds() {
         return ImmutableSet.of(
                 new Identifier("nether"),
+                new Identifier("tall_birch_forest"),
+                new Identifier("giant_tree_taiga"),
+                new Identifier("giant_spruce_taiga"),
+                new Identifier("snowy_tundra"),
+                new Identifier("jungle_edge"),
+                new Identifier("stone_shore"),
+                new Identifier("mountains"),
+                new Identifier("wooded_mountains"),
+                new Identifier("gravelly_mountains"),
+                new Identifier("shattered_savanna"),
+                new Identifier("wooded_badlands_plateau"),
                 new Identifier("badlands_plateau"),
                 new Identifier("bamboo_jungle_hills"),
                 new Identifier("birch_forest_hills"),

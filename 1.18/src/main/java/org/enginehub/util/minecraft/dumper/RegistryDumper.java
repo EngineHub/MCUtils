@@ -23,7 +23,7 @@ abstract class RegistryDumper<V> implements Dumper {
         this.file = file;
         GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
         registerAdapters(builder);
-        this.gson = builder.create();
+        gson = builder.create();
     }
 
     public void registerAdapters(GsonBuilder builder) {
@@ -36,7 +36,7 @@ abstract class RegistryDumper<V> implements Dumper {
         ImmutableList<Map<String, Object>> list = ImmutableList.sortedCopyOf(getComparator(), getRegistry().getIds().stream().flatMap(v -> getProperties(v, registry.get(v)).stream()).collect(Collectors.toList()));
 
         String out = gson.toJson(list);
-        this.write(out);
+        write(out);
         System.out.println("Wrote file: " + file.getAbsolutePath());
     }
 
@@ -50,8 +50,8 @@ abstract class RegistryDumper<V> implements Dumper {
     }
 
     protected String rgb(int i) {
-        int r = (i >> 16) & 0xFF;
-        int g = (i >> 8) & 0xFF;
+        int r = i >> 16 & 0xFF;
+        int g = i >> 8 & 0xFF;
         int b = i & 0xFF;
         return String.format("#%02x%02x%02x", r, g, b);
     }
