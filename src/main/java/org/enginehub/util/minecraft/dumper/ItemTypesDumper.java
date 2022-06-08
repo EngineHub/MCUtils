@@ -1,12 +1,11 @@
 package org.enginehub.util.minecraft.dumper;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableSet;
-import com.squareup.javapoet.ClassName;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import com.google.common.collect.Iterators;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 
-import java.util.Collection;
+import java.util.Iterator;
 
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
@@ -19,23 +18,30 @@ public class ItemTypesDumper extends RegistryClassDumper {
     }
 
     public ItemTypesDumper() {
-        super(ClassName.get("com.sk89q.worldedit.world.item", "ItemType"), true);
+        super(
+            Registry.ITEM_REGISTRY,
+            "com.sk89q.worldedit.world.item", "Item"
+        );
     }
 
     @Override
-    protected Collection<Identifier> getIds() {
-        return Registry.ITEM.getIds();
+    protected Iterator<ResourceLocation> getDeprecatedIds() {
+        return Iterators.forArray(
+            new ResourceLocation("cactus_green"),
+            new ResourceLocation("dandelion_yellow"),
+            new ResourceLocation("rose_red"),
+            new ResourceLocation("sign"),
+            new ResourceLocation("zombie_pigman_spawn_egg"),
+            new ResourceLocation("grass_path")
+        );
     }
 
     @Override
-    protected Collection<Identifier> getDeprecatedIds() {
-        return ImmutableSet.of(
-            new Identifier("cactus_green"),
-            new Identifier("dandelion_yellow"),
-            new Identifier("rose_red"),
-            new Identifier("sign"),
-            new Identifier("zombie_pigman_spawn_egg"),
-            new Identifier("grass_path")
+    protected Iterator<ResourceLocation> getDeprecatedTags() {
+        return Iterators.forArray(
+            new ResourceLocation("carpets"),
+            new ResourceLocation("furnace_materials"),
+            new ResourceLocation("occludes_vibration_signals")
         );
     }
 }

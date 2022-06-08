@@ -1,9 +1,9 @@
 package org.enginehub.util.minecraft.dumper;
 
 import com.google.auto.service.AutoService;
-import net.minecraft.item.Item;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,19 +43,19 @@ public class ItemRegistryDumper extends RegistryDumper<Item> {
         return Comparator.comparing(map -> (String) map.get("id"));
     }
 
-    public List<Map<String, Object>> getProperties(Identifier resourceLocation, Item item) {
+    public List<Map<String, Object>> getProperties(ResourceLocation resourceLocation, Item item) {
         List<Map<String, Object>> maps = new ArrayList<>();
         maps.add(getPropertiesForItem(resourceLocation, item));
         return maps;
     }
 
-    private Map<String, Object> getPropertiesForItem(Identifier resourceLocation, Item item) {
+    private Map<String, Object> getPropertiesForItem(ResourceLocation resourceLocation, Item item) {
         Map<String, Object> map = new TreeMap<>();
         map.put("id", resourceLocation.toString());
-        map.put("unlocalizedName", item.getTranslationKey(item.getDefaultStack()));
-        map.put("localizedName", item.getName(item.getDefaultStack()).getString());
+        map.put("unlocalizedName", item.getDescriptionId(item.getDefaultInstance()));
+        map.put("localizedName", item.getName(item.getDefaultInstance()).getString());
         map.put("maxDamage", item.getMaxDamage());
-        map.put("maxStackSize", item.getMaxCount());
+        map.put("maxStackSize", item.getMaxStackSize());
         return map;
     }
 }

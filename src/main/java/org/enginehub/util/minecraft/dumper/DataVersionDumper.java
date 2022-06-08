@@ -5,16 +5,14 @@ import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.SharedConstants;
-import net.minecraft.block.Block;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.state.property.EnumProperty;
-import net.minecraft.state.property.IntProperty;
-import net.minecraft.state.property.Property;
-import net.minecraft.tag.TagGroup;
-import net.minecraft.tag.TagManager;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.Property;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,8 +25,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.enginehub.util.minecraft.util.GameSetupUtils.getServerRegistry;
-import static org.enginehub.util.minecraft.util.GameSetupUtils.getServerResources;
+import static org.enginehub.util.minecraft.util.GameSetupUtils.getServerRegistries;
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
 public class DataVersionDumper implements Dumper {
@@ -42,7 +39,7 @@ public class DataVersionDumper implements Dumper {
     public static class Default implements Dumper {
         @Override
         public void run() {
-            File file = new File("output/" + SharedConstants.getGameVersion().getWorldVersion() + ".json");
+            File file = new File("output/" + SharedConstants.getCurrentVersion().getDataVersion().getVersion() + ".json");
             new DataVersionDumper(file).run();
         }
     }
@@ -54,15 +51,16 @@ public class DataVersionDumper implements Dumper {
         this.file = file;
     }
 
-    private <T> Map<String, List<String>> getTags(TagGroup<T> provider, Registry<T> registry) {
+    private <T> Map<String, List<String>> getTags(Registry<T> registry) {
         Map<String, List<String>> tagCollector = new TreeMap<>();
 
-        provider.getTags().forEach((key, value) ->
-            tagCollector.put(key.toString(), value.values().stream()
-                .map(entry -> checkNotNull(registry.getId(entry)))
-                .map(Identifier::toString)
+        registry.getTags().forEach(tagPair ->
+            tagCollector.put(tagPair.getFirst().location().toString(), tagPair.getSecond().stream()
+                .map(entry -> checkNotNull(registry.getKey(entry.value())))
+                .map(ResourceLocation::toString)
                 .sorted()
-                .collect(Collectors.toList())));
+                .collect(Collectors.toList()))
+        );
 
         return tagCollector;
     }
@@ -71,7 +69,7 @@ public class DataVersionDumper implements Dumper {
     private String getTypeName(Class<? extends Property> clazz) {
         if (clazz == EnumProperty.class) {
             return "enum";
-        } else if (clazz == IntProperty.class) {
+        } else if (clazz == IntegerProperty.class) {
             return "int";
         } else if (clazz == BooleanProperty.class) {
             return "bool";
@@ -86,22 +84,22 @@ public class DataVersionDumper implements Dumper {
     public void run() {
         // Blocks
         Map<String, Map<String, Object>> blocks = new TreeMap<>();
-        for (Identifier blockId : Registry.BLOCK.getIds()) {
+        for (ResourceLocation blockId : Registry.BLOCK.keySet()) {
             Map<String, Object> bl = new TreeMap<>();
             Block block = Registry.BLOCK.get(blockId);
             Map<String, Object> properties = new TreeMap<>();
-            for (Property<?> prop : block.getDefaultState().getProperties()) {
+            for (Property<?> prop : block.defaultBlockState().getProperties()) {
                 Map<String, Object> propertyValues = new TreeMap<>();
-                propertyValues.put("values", prop.getValues().stream().map(s -> s.toString().toLowerCase()).collect(Collectors.toList()));
+                propertyValues.put("values", prop.getPossibleValues().stream().map(s -> s.toString().toLowerCase()).collect(Collectors.toList()));
                 propertyValues.put("type", getTypeName(prop.getClass()));
                 properties.put(prop.getName(), propertyValues);
             }
             bl.put("properties", properties);
             StringBuilder defaultState = new StringBuilder();
             defaultState.append(blockId.toString());
-            if (!block.getDefaultState().getEntries().isEmpty()) {
+            if (!block.defaultBlockState().getValues().isEmpty()) {
                 List<String> bits = new ArrayList<>();
-                block.getDefaultState().getEntries().entrySet().stream()
+                block.defaultBlockState().getValues().entrySet().stream()
                     .sorted(Comparator.comparing(e -> e.getKey().getName()))
                     .forEach(e ->
                         bits.add(e.getKey().getName() + "=" + e.getValue().toString().toLowerCase())
@@ -113,23 +111,22 @@ public class DataVersionDumper implements Dumper {
         }
 
         // Items
-        List<String> items = Registry.ITEM.getIds().stream().sorted().map(Identifier::toString).collect(Collectors.toList());
+        List<String> items = Registry.ITEM.keySet().stream().sorted().map(ResourceLocation::toString).collect(Collectors.toList());
 
         // Entities
-        List<String> entities = Registry.ENTITY_TYPE.getIds().stream().sorted().map(Identifier::toString).collect(Collectors.toList());
+        List<String> entities = Registry.ENTITY_TYPE.keySet().stream().sorted().map(ResourceLocation::toString).collect(Collectors.toList());
 
         // Biomes
-        List<String> biomes = getServerRegistry().get(Registry.BIOME_KEY).getIds().stream().sorted().map(Identifier::toString).collect(Collectors.toList());
+        List<String> biomes = getServerRegistries().registryOrThrow(Registry.BIOME_REGISTRY).keySet().stream().sorted().map(ResourceLocation::toString).collect(Collectors.toList());
 
-        TagManager tagManager = getServerResources().getRegistryTagManager();
         // BlockTags
-        Map<String, List<String>> blockTags = getTags(tagManager.getOrCreateTagGroup(Registry.BLOCK_KEY), Registry.BLOCK);
+        Map<String, List<String>> blockTags = getTags(getServerRegistries().registryOrThrow(Registry.BLOCK_REGISTRY));
 
         // ItemTags
-        Map<String, List<String>> itemTags = getTags(tagManager.getOrCreateTagGroup(Registry.ITEM_KEY), Registry.ITEM);
+        Map<String, List<String>> itemTags = getTags(getServerRegistries().registryOrThrow(Registry.ITEM_REGISTRY));
 
         // EntityTags
-        Map<String, List<String>> entityTags = getTags(tagManager.getOrCreateTagGroup(Registry.ENTITY_TYPE_KEY), Registry.ENTITY_TYPE);
+        Map<String, List<String>> entityTags = getTags(getServerRegistries().registryOrThrow(Registry.ENTITY_TYPE_REGISTRY));
 
         Map<String, Object> output = new TreeMap<>();
         output.put("blocks", blocks);
@@ -141,7 +138,7 @@ public class DataVersionDumper implements Dumper {
         output.put("entitytags", entityTags);
 
         try {
-            Files.write(gson.toJson(output), file, StandardCharsets.UTF_8);
+            Files.asCharSink(file, StandardCharsets.UTF_8).write(gson.toJson(output));
         } catch (IOException e) {
             e.printStackTrace();
         }

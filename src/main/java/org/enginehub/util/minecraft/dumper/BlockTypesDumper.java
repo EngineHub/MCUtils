@@ -1,12 +1,11 @@
 package org.enginehub.util.minecraft.dumper;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableSet;
-import com.squareup.javapoet.ClassName;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import com.google.common.collect.Iterators;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 
-import java.util.Collection;
+import java.util.Iterator;
 
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
@@ -19,20 +18,27 @@ public class BlockTypesDumper extends RegistryClassDumper {
     }
 
     public BlockTypesDumper() {
-        super(ClassName.get("com.sk89q.worldedit.world.block", "BlockType"), true);
+        super(
+            Registry.BLOCK_REGISTRY,
+            "com.sk89q.worldedit.world.block", "Block"
+        );
     }
 
     @Override
-    protected Collection<Identifier> getIds() {
-        return Registry.BLOCK.getIds();
+    protected Iterator<ResourceLocation> getDeprecatedIds() {
+        return Iterators.forArray(
+            new ResourceLocation("sign"),
+            new ResourceLocation("wall_sign"),
+            new ResourceLocation("grass_path")
+        );
     }
 
     @Override
-    protected Collection<Identifier> getDeprecatedIds() {
-        return ImmutableSet.of(
-            new Identifier("sign"),
-            new Identifier("wall_sign"),
-            new Identifier("grass_path")
+    protected Iterator<ResourceLocation> getDeprecatedTags() {
+        return Iterators.forArray(
+            new ResourceLocation("dirt_like"),
+            new ResourceLocation("carpets"),
+            new ResourceLocation("lava_pool_stone_replaceables")
         );
     }
 }

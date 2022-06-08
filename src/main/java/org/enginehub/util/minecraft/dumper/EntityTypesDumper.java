@@ -1,12 +1,11 @@
 package org.enginehub.util.minecraft.dumper;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableSet;
-import com.squareup.javapoet.ClassName;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import com.google.common.collect.Iterators;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 
-import java.util.Collection;
+import java.util.Iterator;
 
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
@@ -19,18 +18,16 @@ public class EntityTypesDumper extends RegistryClassDumper {
     }
 
     public EntityTypesDumper() {
-        super(ClassName.get("com.sk89q.worldedit.world.entity", "EntityType"), true);
+        super(
+            Registry.ENTITY_TYPE_REGISTRY,
+            "com.sk89q.worldedit.world.entity", "Entity"
+        );
     }
 
     @Override
-    protected Collection<Identifier> getIds() {
-        return Registry.ENTITY_TYPE.getIds();
-    }
-
-    @Override
-    protected Collection<Identifier> getDeprecatedIds() {
-        return ImmutableSet.of(
-            new Identifier("zombie_pigman")
+    protected Iterator<ResourceLocation> getDeprecatedIds() {
+        return Iterators.forArray(
+            new ResourceLocation("zombie_pigman")
         );
     }
 }
