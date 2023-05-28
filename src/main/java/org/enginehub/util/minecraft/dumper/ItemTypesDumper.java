@@ -3,6 +3,7 @@ package org.enginehub.util.minecraft.dumper;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.Iterators;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Iterator;
@@ -19,7 +20,7 @@ public class ItemTypesDumper extends RegistryClassDumper {
 
     public ItemTypesDumper() {
         super(
-            Registry.ITEM_REGISTRY,
+            Registries.ITEM,
             "com.sk89q.worldedit.world.item", "Item"
         );
     }

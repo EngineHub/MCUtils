@@ -2,7 +2,7 @@ package org.enginehub.util.minecraft.dumper;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.Iterators;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Iterator;
@@ -19,7 +19,7 @@ public class BiomeTypesDumper extends RegistryClassDumper {
 
     public BiomeTypesDumper() {
         super(
-            Registry.BIOME_REGISTRY,
+            Registries.BIOME,
             "com.sk89q.worldedit.world.biome", "Biome"
         );
     }

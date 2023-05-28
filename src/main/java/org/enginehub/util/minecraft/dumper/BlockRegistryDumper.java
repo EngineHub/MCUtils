@@ -9,21 +9,25 @@ import com.google.gson.stream.JsonWriter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.locale.Language;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.level.EmptyBlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.enginehub.util.minecraft.util.GameSetupUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +64,7 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
 
     @Override
     public Registry<Block> getRegistry() {
-        return Registry.BLOCK;
+        return GameSetupUtils.getServerRegistries().registryOrThrow(Registries.BLOCK);
     }
 
     @Override
@@ -79,6 +83,13 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
 
     private Map<String, Object> getMaterial(Block b) {
         BlockState bs = b.defaultBlockState();
+        Field mapColorField;
+        try {
+            mapColorField = BlockBehaviour.BlockStateBase.class.getDeclaredField("mapColor");
+            mapColorField.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
         Map<String, Object> map = new TreeMap<>();
         map.put("powerSource", bs.isSignalSource());
         map.put("lightValue", bs.getLightEmission());
@@ -88,17 +99,20 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
         VoxelShape vs = bs.getCollisionShape(EmptyBlockGetter.INSTANCE, BlockPos.ZERO);
         map.put("fullCube", !vs.isEmpty() && isFullCube(vs.bounds()));
         map.put("slipperiness", b.getFriction());
-        Material m = bs.getMaterial();
-        map.put("liquid", m.isLiquid());
-        map.put("solid", m.isSolid());
-        map.put("movementBlocker", m.blocksMotion());
-        map.put("burnable", m.isFlammable());
-        map.put("opaque", m.isSolidBlocking());
-        map.put("replacedDuringPlacement", m.isReplaceable());
+        map.put("liquid", bs.liquid());
+        map.put("solid", bs.isSolid());
+        map.put("movementBlocker", bs.blocksMotion());
+        map.put("burnable", bs.ignitedByLava());
+        map.put("opaque", bs.canOcclude());
+        map.put("replacedDuringPlacement", bs.canBeReplaced());
         map.put("toolRequired", bs.requiresCorrectToolForDrops());
-        map.put("fragileWhenPushed", m.getPushReaction() == PushReaction.DESTROY);
-        map.put("unpushable", m.getPushReaction() == PushReaction.BLOCK);
-        map.put("mapColor", rgb(m.getColor().col));
+        map.put("fragileWhenPushed", bs.getPistonPushReaction() == PushReaction.DESTROY);
+        map.put("unpushable", bs.getPistonPushReaction() == PushReaction.BLOCK);
+        try {
+            map.put("mapColor", rgb(((MapColor)mapColorField.get(bs)).col));
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
         map.put("hasContainer", b instanceof EntityBlock &&
             (((EntityBlock) b).newBlockEntity(BlockPos.ZERO, bs) instanceof Clearable));
         return map;

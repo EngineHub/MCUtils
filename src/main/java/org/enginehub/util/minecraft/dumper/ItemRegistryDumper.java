@@ -2,8 +2,10 @@ package org.enginehub.util.minecraft.dumper;
 
 import com.google.auto.service.AutoService;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import org.enginehub.util.minecraft.util.GameSetupUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,7 +37,7 @@ public class ItemRegistryDumper extends RegistryDumper<Item> {
 
     @Override
     public Registry<Item> getRegistry() {
-        return Registry.ITEM;
+        return GameSetupUtils.getServerRegistries().registryOrThrow(Registries.ITEM);
     }
 
     @Override

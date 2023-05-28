@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
@@ -84,9 +85,9 @@ public class DataVersionDumper implements Dumper {
     public void run() {
         // Blocks
         Map<String, Map<String, Object>> blocks = new TreeMap<>();
-        for (ResourceLocation blockId : Registry.BLOCK.keySet()) {
+        for (ResourceLocation blockId : getServerRegistries().registryOrThrow(Registries.BLOCK).keySet()) {
             Map<String, Object> bl = new TreeMap<>();
-            Block block = Registry.BLOCK.get(blockId);
+            Block block = getServerRegistries().registryOrThrow(Registries.BLOCK).get(blockId);
             Map<String, Object> properties = new TreeMap<>();
             for (Property<?> prop : block.defaultBlockState().getProperties()) {
                 Map<String, Object> propertyValues = new TreeMap<>();
@@ -111,22 +112,22 @@ public class DataVersionDumper implements Dumper {
         }
 
         // Items
-        List<String> items = Registry.ITEM.keySet().stream().sorted().map(ResourceLocation::toString).collect(Collectors.toList());
+        List<String> items = getServerRegistries().registryOrThrow(Registries.ITEM).keySet().stream().sorted().map(ResourceLocation::toString).collect(Collectors.toList());
 
         // Entities
-        List<String> entities = Registry.ENTITY_TYPE.keySet().stream().sorted().map(ResourceLocation::toString).collect(Collectors.toList());
+        List<String> entities = getServerRegistries().registryOrThrow(Registries.ENTITY_TYPE).keySet().stream().sorted().map(ResourceLocation::toString).collect(Collectors.toList());
 
         // Biomes
-        List<String> biomes = getServerRegistries().registryOrThrow(Registry.BIOME_REGISTRY).keySet().stream().sorted().map(ResourceLocation::toString).collect(Collectors.toList());
+        List<String> biomes = getServerRegistries().registryOrThrow(Registries.BIOME).keySet().stream().sorted().map(ResourceLocation::toString).collect(Collectors.toList());
 
         // BlockTags
-        Map<String, List<String>> blockTags = getTags(getServerRegistries().registryOrThrow(Registry.BLOCK_REGISTRY));
+        Map<String, List<String>> blockTags = getTags(getServerRegistries().registryOrThrow(Registries.BLOCK));
 
         // ItemTags
-        Map<String, List<String>> itemTags = getTags(getServerRegistries().registryOrThrow(Registry.ITEM_REGISTRY));
+        Map<String, List<String>> itemTags = getTags(getServerRegistries().registryOrThrow(Registries.ITEM));
 
         // EntityTags
-        Map<String, List<String>> entityTags = getTags(getServerRegistries().registryOrThrow(Registry.ENTITY_TYPE_REGISTRY));
+        Map<String, List<String>> entityTags = getTags(getServerRegistries().registryOrThrow(Registries.ENTITY_TYPE));
 
         Map<String, Object> output = new TreeMap<>();
         output.put("blocks", blocks);

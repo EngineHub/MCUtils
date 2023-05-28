@@ -3,6 +3,7 @@ package org.enginehub.util.minecraft.dumper;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.Iterators;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Iterator;
@@ -19,7 +20,7 @@ public class EntityTypesDumper extends RegistryClassDumper {
 
     public EntityTypesDumper() {
         super(
-            Registry.ENTITY_TYPE_REGISTRY,
+            Registries.ENTITY_TYPE,
             "com.sk89q.worldedit.world.entity", "Entity"
         );
     }
