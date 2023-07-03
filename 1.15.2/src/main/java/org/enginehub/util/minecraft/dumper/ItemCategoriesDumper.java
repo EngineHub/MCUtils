@@ -22,7 +22,7 @@ public class ItemCategoriesDumper extends RegistryClassDumper {
     }
 
     @Override
-    protected Collection<Identifier> getIds() {
-        return ItemTags.getContainer().getKeys();
+    protected Collection<String> getIds() {
+        return ItemTags.getContainer().getKeys().stream().map(Identifier::getPath).toList();
     }
 }

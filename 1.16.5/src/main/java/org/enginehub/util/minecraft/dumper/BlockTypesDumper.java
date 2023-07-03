@@ -23,15 +23,15 @@ public class BlockTypesDumper extends RegistryClassDumper {
     }
 
     @Override
-    protected Collection<Identifier> getIds() {
-        return Registry.BLOCK.getIds();
+    protected Collection<String> getIds() {
+        return Registry.BLOCK.getIds().stream().map(Identifier::getPath).toList();
     }
 
     @Override
-    protected Collection<Identifier> getDeprecatedIds() {
+    protected Collection<String> getDeprecatedIds() {
         return ImmutableSet.of(
-            new Identifier("sign"),
-            new Identifier("wall_sign")
+            "sign",
+            "wall_sign"
         );
     }
 }

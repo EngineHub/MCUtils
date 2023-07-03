@@ -23,14 +23,14 @@ public class EntityTypesDumper extends RegistryClassDumper {
     }
 
     @Override
-    protected Collection<Identifier> getIds() {
-        return Registry.ENTITY_TYPE.getIds();
+    protected Collection<String> getIds() {
+        return Registry.ENTITY_TYPE.getIds().stream().map(Identifier::getPath).toList();
     }
 
     @Override
-    protected Collection<Identifier> getDeprecatedIds() {
+    protected Collection<String> getDeprecatedIds() {
         return ImmutableSet.of(
-            new Identifier("zombie_pigman")
+            "zombie_pigman"
         );
     }
 }

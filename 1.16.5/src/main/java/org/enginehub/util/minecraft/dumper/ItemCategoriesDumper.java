@@ -23,12 +23,14 @@ public class ItemCategoriesDumper extends RegistryClassDumper {
     }
 
     @Override
-    protected Collection<Identifier> getIds() {
-        return getServerResources().getRegistryTagManager().getItems().getTagIds();
+    protected Collection<String> getIds() {
+        return getServerResources().getRegistryTagManager().getItems().getTagIds().stream().map(Identifier::getPath).toList();
     }
 
     @Override
-    protected Collection<Identifier> getDeprecatedIds() {
-        return ImmutableSet.of(new Identifier("furnace_materials"));
+    protected Collection<String> getDeprecatedIds() {
+        return ImmutableSet.of(
+                "furnace_materials"
+        );
     }
 }

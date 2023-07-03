@@ -30,8 +30,8 @@ public class ItemRegistryDumper extends RegistryDumper<Item> {
     }
 
     @Override
-    public Registry<Item> getRegistry() {
-        return Registry.ITEM;
+    public Collection<String> getIds() {
+        return Registry.ITEM.getIds().stream().map(Identifier::toString).toList();
     }
 
     @Override
@@ -40,15 +40,16 @@ public class ItemRegistryDumper extends RegistryDumper<Item> {
     }
 
     @Override
-    public List<Map<String, Object>> getProperties(Identifier resourceLocation, Item item) {
+    public List<Map<String, Object>> getProperties(String resourceLocation) {
+        Item item = Registry.ITEM.get(new Identifier(resourceLocation));
         List<Map<String, Object>> maps = new ArrayList<>();
         maps.add(getPropertiesForItem(resourceLocation, item));
         return maps;
     }
 
-    private Map<String, Object> getPropertiesForItem(Identifier resourceLocation, Item item) {
+    private Map<String, Object> getPropertiesForItem(String resourceLocation, Item item) {
         Map<String, Object> map = new TreeMap<>();
-        map.put("id", resourceLocation.toString());
+        map.put("id", resourceLocation);
         map.put("unlocalizedName", item.getTranslationKey(item.getStackForRender()));
         map.put("localizedName", item.getName(item.getStackForRender()).getString());
         map.put("maxDamage", item.getMaxDamage());

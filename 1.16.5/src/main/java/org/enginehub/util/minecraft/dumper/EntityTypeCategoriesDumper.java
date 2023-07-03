@@ -23,7 +23,7 @@ public class EntityTypeCategoriesDumper extends RegistryClassDumper {
     }
 
     @Override
-    protected Collection<Identifier> getIds() {
-        return getServerResources().getRegistryTagManager().getEntityTypes().getTagIds();
+    protected Collection<String> getIds() {
+        return getServerResources().getRegistryTagManager().getEntityTypes().getTagIds().stream().map(Identifier::getPath).toList();
     }
 }

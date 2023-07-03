@@ -21,10 +21,7 @@ import net.minecraft.world.EmptyBlockView;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
@@ -50,8 +47,8 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
     }
 
     @Override
-    public Registry<Block> getRegistry() {
-        return Registry.BLOCK;
+    public Collection<String> getIds() {
+        return Registry.BLOCK.getIds().stream().map(Identifier::toString).toList();
     }
 
     @Override
@@ -60,9 +57,10 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
     }
 
     @Override
-    public List<Map<String, Object>> getProperties(Identifier resourceLocation, Block block) {
+    public List<Map<String, Object>> getProperties(String resourceLocation) {
+        Block block = Registry.BLOCK.get(new Identifier(resourceLocation));
         Map<String, Object> map = new TreeMap<>();
-        map.put("id", resourceLocation.toString());
+        map.put("id", resourceLocation);
         map.put("localizedName", Language.getInstance().translate(block.getTranslationKey()));
         map.put("material", getMaterial(block));
         return Lists.newArrayList(map);

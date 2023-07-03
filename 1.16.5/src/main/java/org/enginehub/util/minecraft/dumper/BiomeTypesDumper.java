@@ -24,12 +24,14 @@ public class BiomeTypesDumper extends RegistryClassDumper {
     }
 
     @Override
-    protected Collection<Identifier> getIds() {
-        return getServerRegistry().get(Registry.BIOME_KEY).getIds();
+    protected Collection<String> getIds() {
+        return getServerRegistry().get(Registry.BIOME_KEY).getIds().stream().map(Identifier::getPath).toList();
     }
 
     @Override
-    protected Collection<Identifier> getDeprecatedIds() {
-        return ImmutableSet.of(new Identifier("nether"));
+    protected Collection<String> getDeprecatedIds() {
+        return ImmutableSet.of(
+                "nether"
+        );
     }
 }

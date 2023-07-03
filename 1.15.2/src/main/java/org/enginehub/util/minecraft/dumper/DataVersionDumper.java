@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
-public class DataVersionDumper implements Dumper {
+public class DataVersionDumper extends AbstractDumper {
 
     public static void main(String[] args) {
         setupGame();

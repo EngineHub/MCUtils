@@ -3,7 +3,6 @@ package org.enginehub.util.minecraft.dumper;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
 import net.minecraft.tag.BlockTags;
-import net.minecraft.tag.RegistryTagManager;
 import net.minecraft.util.Identifier;
 
 import java.util.Collection;
@@ -24,7 +23,7 @@ public class BlockCategoriesDumper extends RegistryClassDumper {
     }
 
     @Override
-    protected Collection<Identifier> getIds() {
-        return BlockTags.getContainer().getKeys();
+    protected Collection<String> getIds() {
+        return BlockTags.getContainer().getKeys().stream().map(Identifier::getPath).toList();
     }
 }

@@ -2,11 +2,14 @@ package org.enginehub.util.minecraft.util;
 
 import com.google.common.util.concurrent.Futures;
 import net.minecraft.Bootstrap;
+import net.minecraft.SharedConstants;
 import net.minecraft.resource.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.util.registry.DynamicRegistryManager;
+import org.enginehub.util.minecraft.dumper.AbstractDumper;
 
+import java.io.File;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.locks.Lock;
@@ -15,7 +18,10 @@ import java.util.concurrent.locks.ReentrantLock;
 public final class GameSetupUtils {
 
     public static void setupGame() {
+        SharedConstants.getGameVersion();
         Bootstrap.initialize();
+
+        AbstractDumper.OUTPUT = new File("output/" + SharedConstants.getGameVersion().getName());
     }
 
     private static final Lock lock = new ReentrantLock();

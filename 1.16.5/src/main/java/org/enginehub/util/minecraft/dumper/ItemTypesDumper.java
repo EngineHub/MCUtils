@@ -23,18 +23,18 @@ public class ItemTypesDumper extends RegistryClassDumper {
     }
 
     @Override
-    protected Collection<Identifier> getIds() {
-        return Registry.ITEM.getIds();
+    protected Collection<String> getIds() {
+        return Registry.ITEM.getIds().stream().map(Identifier::getPath).toList();
     }
 
     @Override
-    protected Collection<Identifier> getDeprecatedIds() {
+    protected Collection<String> getDeprecatedIds() {
         return ImmutableSet.of(
-            new Identifier("cactus_green"),
-            new Identifier("dandelion_yellow"),
-            new Identifier("rose_red"),
-            new Identifier("sign"),
-            new Identifier("zombie_pigman_spawn_egg")
+            "cactus_green",
+            "dandelion_yellow",
+            "rose_red",
+            "sign",
+            "zombie_pigman_spawn_egg"
         );
     }
 }

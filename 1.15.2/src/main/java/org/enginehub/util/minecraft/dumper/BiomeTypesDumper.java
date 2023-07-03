@@ -22,7 +22,7 @@ public class BiomeTypesDumper extends RegistryClassDumper {
     }
 
     @Override
-    protected Collection<Identifier> getIds() {
-        return Registry.BIOME.getIds();
+    protected Collection<String> getIds() {
+        return Registry.BIOME.getIds().stream().map(Identifier::getPath).toList();
     }
 }

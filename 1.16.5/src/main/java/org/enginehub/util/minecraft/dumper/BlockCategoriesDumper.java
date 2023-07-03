@@ -23,14 +23,14 @@ public class BlockCategoriesDumper extends RegistryClassDumper {
     }
 
     @Override
-    protected Collection<Identifier> getIds() {
-        return getServerResources().getRegistryTagManager().getBlocks().getTagIds();
+    protected Collection<String> getIds() {
+        return getServerResources().getRegistryTagManager().getBlocks().getTagIds().stream().map(Identifier::getPath).toList();
     }
 
     @Override
-    protected Collection<Identifier> getDeprecatedIds() {
+    protected Collection<String> getDeprecatedIds() {
         return ImmutableSet.of(
-            new Identifier("dirt_like")
+            "dirt_like"
         );
     }
 }
