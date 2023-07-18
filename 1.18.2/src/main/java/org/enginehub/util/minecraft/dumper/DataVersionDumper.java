@@ -7,8 +7,6 @@ import com.google.gson.GsonBuilder;
 import net.minecraft.SharedConstants;
 import net.minecraft.block.Block;
 import net.minecraft.state.property.*;
-import net.minecraft.tag.TagGroup;
-import net.minecraft.tag.TagManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -44,13 +42,13 @@ public class DataVersionDumper extends AbstractDumper {
         this.file = file;
     }
 
-    private <T> Map<String, List<String>> getTags(TagGroup<T> provider, Registry<T> registry) {
+    private <T> Map<String, List<String>> getTags(Registry<T> registry) {
         Map<String, List<String>> tagCollector = new TreeMap<>();
 
-        provider.getTags().forEach((key, value) ->
-            tagCollector.put(key.toString(), value.values().stream()
-                .map(entry -> checkNotNull(registry.getId(entry)))
-                .map(Identifier::toString)
+        registry.streamTagsAndEntries().forEach(tagPair ->
+            tagCollector.put(tagPair.getFirst().id().toString(), tagPair.getSecond().stream()
+                .map(entry -> checkNotNull(registry.getKey(entry.value())))
+                .map(Optional::toString)
                 .sorted()
                 .collect(Collectors.toList())));
 
@@ -111,15 +109,14 @@ public class DataVersionDumper extends AbstractDumper {
         // Biomes
         List<String> biomes = getServerRegistry().get(Registry.BIOME_KEY).getIds().stream().sorted().map(Identifier::toString).collect(Collectors.toList());
 
-        TagManager tagManager = getServerResources().getRegistryTagManager();
         // BlockTags
-        Map<String, List<String>> blockTags = getTags(tagManager.getOrCreateTagGroup(Registry.BLOCK_KEY), Registry.BLOCK);
+        Map<String, List<String>> blockTags = getTags(Registry.BLOCK);
 
         // ItemTags
-        Map<String, List<String>> itemTags = getTags(tagManager.getOrCreateTagGroup(Registry.ITEM_KEY), Registry.ITEM);
+        Map<String, List<String>> itemTags = getTags(Registry.ITEM);
 
         // EntityTags
-        Map<String, List<String>> entityTags = getTags(tagManager.getOrCreateTagGroup(Registry.ENTITY_TYPE_KEY), Registry.ENTITY_TYPE);
+        Map<String, List<String>> entityTags = getTags(Registry.ENTITY_TYPE);
 
         Map<String, Object> output = new TreeMap<>();
         output.put("blocks", blocks);

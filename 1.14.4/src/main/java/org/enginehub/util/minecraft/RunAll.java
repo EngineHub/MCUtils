@@ -10,9 +10,9 @@ public class RunAll {
     public static void main(String[] args) {
         GameSetupUtils.setupGame();
         for (Dumper dumper : ServiceLoader.load(Dumper.class)) {
-            System.err.println("Running dumper: " + dumper.getClass().getCanonicalName());
+            System.out.println("Running dumper: " + dumper.getClass().getCanonicalName());
             dumper.run();
-            System.err.println("Finished!");
+            System.out.println("Finished!");
         }
     }
 }

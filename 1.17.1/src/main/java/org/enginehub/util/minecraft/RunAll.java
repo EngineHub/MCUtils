@@ -12,9 +12,9 @@ public class RunAll {
         GameSetupUtils.getServerResources();
         GameSetupUtils.getServerRegistry();
         for (Dumper dumper : ServiceLoader.load(Dumper.class)) {
-            System.err.println("Running dumper: " + dumper.getClass().getCanonicalName());
+            System.out.println("Running dumper: " + dumper.getClass().getCanonicalName());
             dumper.run();
-            System.err.println("Finished!");
+            System.out.println("Finished!");
         }
     }
 }

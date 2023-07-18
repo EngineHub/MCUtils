@@ -1,6 +1,6 @@
 plugins {
     java
-    id("fabric-loom") version "0.13.9"
+    id("fabric-loom") version "0.13.20"
 }
 
 group = "org.enginehub"
