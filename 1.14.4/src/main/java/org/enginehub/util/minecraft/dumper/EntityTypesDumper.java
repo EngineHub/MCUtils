@@ -5,7 +5,7 @@ import com.squareup.javapoet.ClassName;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-import java.util.Collection;
+import java.util.Iterator;
 
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
@@ -22,7 +22,7 @@ public class EntityTypesDumper extends RegistryClassDumper {
     }
 
     @Override
-    protected Collection<String> getIds() {
-        return Registry.ENTITY_TYPE.getIds().stream().map(Identifier::getPath).toList();
+    protected Iterator<String> getIds() {
+        return Registry.ENTITY_TYPE.getIds().stream().map(Identifier::getPath).iterator();
     }
 }

@@ -4,7 +4,7 @@ import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
 import net.minecraft.util.Identifier;
 
-import java.util.Collection;
+import java.util.Iterator;
 
 import static org.enginehub.util.minecraft.util.GameSetupUtils.getServerResources;
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
@@ -23,7 +23,7 @@ public class EntityTypeCategoriesDumper extends RegistryClassDumper {
     }
 
     @Override
-    protected Collection<String> getIds() {
-        return getServerResources().getRegistryTagManager().getEntityTypes().getTagIds().stream().map(Identifier::getPath).toList();
+    protected Iterator<String> getIds() {
+        return getServerResources().getRegistryTagManager().getEntityTypes().getTagIds().stream().map(Identifier::getPath).iterator();
     }
 }

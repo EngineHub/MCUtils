@@ -11,7 +11,6 @@ import net.minecraft.util.registry.DynamicRegistryManager;
 import org.enginehub.util.minecraft.dumper.AbstractDumper;
 
 import java.io.File;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.locks.Lock;
@@ -40,13 +39,13 @@ public final class GameSetupUtils {
                 return localResources;
             }
             ResourcePackManager resourcePackManager = new ResourcePackManager(
-                ResourceType.SERVER_DATA,
-                new VanillaDataPackProvider()
+                    ResourceType.SERVER_DATA,
+                    new VanillaDataPackProvider()
             );
             MinecraftServer.loadDataPacks(resourcePackManager, DataPackSettings.SAFE_MODE, true);
             DynamicRegistryManager.Immutable immutable = DynamicRegistryManager.BUILTIN.get();
             LifecycledResourceManagerImpl lifecycledResourceManager = new LifecycledResourceManagerImpl(ResourceType.SERVER_DATA, resourcePackManager.createResourcePacks());
-            CompletableFuture<DataPackContents> completableFuture = ( DataPackContents.reload(lifecycledResourceManager, immutable, CommandManager.RegistrationEnvironment.DEDICATED, 0, ForkJoinPool.commonPool(), Runnable::run).whenComplete((dataPackContents, throwable) -> {
+            CompletableFuture<DataPackContents> completableFuture = (DataPackContents.reload(lifecycledResourceManager, immutable, CommandManager.RegistrationEnvironment.DEDICATED, 0, ForkJoinPool.commonPool(), Runnable::run).whenComplete((dataPackContents, throwable) -> {
                 if (throwable != null) {
                     lifecycledResourceManager.close();
                 }

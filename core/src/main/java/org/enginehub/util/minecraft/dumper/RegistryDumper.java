@@ -20,7 +20,7 @@ abstract class RegistryDumper<V> extends AbstractDumper {
 
     protected RegistryDumper(File file) {
         this.file = file;
-        GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
+        GsonBuilder builder = new GsonBuilder();
         registerAdapters(builder);
         gson = builder.create();
     }

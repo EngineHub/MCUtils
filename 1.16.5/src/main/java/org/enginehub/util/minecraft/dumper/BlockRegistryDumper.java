@@ -113,6 +113,7 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
         public Vec3i read(final JsonReader in) {
             throw new UnsupportedOperationException();
         }
+
         @Override
         public void write(final JsonWriter out, final Vec3i vec) throws IOException {
             out.beginArray();
@@ -128,6 +129,7 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
         public Vec3d read(final JsonReader in) {
             throw new UnsupportedOperationException();
         }
+
         @Override
         public void write(final JsonWriter out, final Vec3d vec) throws IOException {
             out.beginArray();

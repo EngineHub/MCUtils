@@ -127,7 +127,7 @@ public class DataVersionDumper extends AbstractDumper {
         output.put("entitytags", entityTags);
 
         try {
-            Files.write(gson.toJson(output), file, StandardCharsets.UTF_8);
+            Files.asCharSink(file, StandardCharsets.UTF_8).write(gson.toJson(output));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -7,7 +7,10 @@ import com.google.gson.GsonBuilder;
 import net.minecraft.SharedConstants;
 import net.minecraft.block.Block;
 import net.minecraft.state.property.*;
-import net.minecraft.tag.*;
+import net.minecraft.tag.BlockTags;
+import net.minecraft.tag.EntityTypeTags;
+import net.minecraft.tag.ItemTags;
+import net.minecraft.tag.TagContainer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -125,7 +128,7 @@ public class DataVersionDumper extends AbstractDumper {
         output.put("entitytags", entityTags);
 
         try {
-            Files.write(gson.toJson(output), file, StandardCharsets.UTF_8);
+            Files.asCharSink(file, StandardCharsets.UTF_8).write(gson.toJson(output));
         } catch (IOException e) {
             e.printStackTrace();
         }

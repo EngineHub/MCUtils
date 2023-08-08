@@ -2,15 +2,14 @@ package org.enginehub.util.minecraft.dumper;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.Iterators;
 import com.google.common.io.MoreFiles;
 import com.squareup.javapoet.*;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
@@ -48,10 +47,10 @@ public abstract class RegistryClassDumper extends AbstractDumper {
         this.nullable = nullable;
     }
 
-    protected abstract Collection<String> getIds();
+    protected abstract Iterator<String> getIds();
 
-    protected Collection<String> getDeprecatedIds() {
-        return Collections.emptySet();
+    protected Iterator<String> getDeprecatedIds() {
+        return Iterators.forArray();
     }
 
     @Override

@@ -6,7 +6,6 @@ import net.minecraft.SharedConstants;
 import net.minecraft.resource.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import org.enginehub.util.minecraft.dumper.AbstractDumper;
 
@@ -38,19 +37,19 @@ public final class GameSetupUtils {
                 return localResources;
             }
             ResourcePackManager resourcePackManager = new ResourcePackManager(
-                ResourceType.SERVER_DATA,
-                new VanillaDataPackProvider()
+                    ResourceType.SERVER_DATA,
+                    new VanillaDataPackProvider()
             );
             MinecraftServer.loadDataPacks(resourcePackManager, DataPackSettings.SAFE_MODE, true);
             DynamicRegistryManager.Impl impl = DynamicRegistryManager.create();
             CompletableFuture<ServerResourceManager> completableFuture = ServerResourceManager.reload(
-                resourcePackManager.createResourcePacks(),
-                impl,
-                CommandManager.RegistrationEnvironment.DEDICATED,
-                // permission level doesn't matter
-                0,
-                ForkJoinPool.commonPool(),
-                Runnable::run
+                    resourcePackManager.createResourcePacks(),
+                    impl,
+                    CommandManager.RegistrationEnvironment.DEDICATED,
+                    // permission level doesn't matter
+                    0,
+                    ForkJoinPool.commonPool(),
+                    Runnable::run
             );
             ServerResourceManager manager = Futures.getUnchecked(completableFuture);
             manager.loadRegistryTags();

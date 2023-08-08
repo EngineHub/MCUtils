@@ -37,17 +37,17 @@ public final class GameSetupUtils {
                 return localResources;
             }
             ResourcePackManager resourcePackManager = new ResourcePackManager(
-                ResourcePackProfile::new,
-                new VanillaDataPackProvider()
+                    ResourcePackProfile::new,
+                    new VanillaDataPackProvider()
             );
             MinecraftServer.loadDataPacks(resourcePackManager, DataPackSettings.SAFE_MODE, true);
             CompletableFuture<ServerResourceManager> completableFuture = ServerResourceManager.reload(
-                resourcePackManager.createResourcePacks(),
-                CommandManager.RegistrationEnvironment.DEDICATED,
-                // permission level doesn't matter
-                0,
-                ForkJoinPool.commonPool(),
-                Runnable::run
+                    resourcePackManager.createResourcePacks(),
+                    CommandManager.RegistrationEnvironment.DEDICATED,
+                    // permission level doesn't matter
+                    0,
+                    ForkJoinPool.commonPool(),
+                    Runnable::run
             );
             ServerResourceManager manager = Futures.getUnchecked(completableFuture);
             manager.loadRegistryTags();

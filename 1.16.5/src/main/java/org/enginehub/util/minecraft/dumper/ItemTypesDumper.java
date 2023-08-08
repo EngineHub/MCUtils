@@ -1,12 +1,12 @@
 package org.enginehub.util.minecraft.dumper;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterators;
 import com.squareup.javapoet.ClassName;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-import java.util.Collection;
+import java.util.Iterator;
 
 import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
@@ -23,18 +23,18 @@ public class ItemTypesDumper extends RegistryClassDumper {
     }
 
     @Override
-    protected Collection<String> getIds() {
-        return Registry.ITEM.getIds().stream().map(Identifier::getPath).toList();
+    protected Iterator<String> getIds() {
+        return Registry.ITEM.getIds().stream().map(Identifier::getPath).iterator();
     }
 
     @Override
-    protected Collection<String> getDeprecatedIds() {
-        return ImmutableSet.of(
-            "cactus_green",
-            "dandelion_yellow",
-            "rose_red",
-            "sign",
-            "zombie_pigman_spawn_egg"
+    protected Iterator<String> getDeprecatedIds() {
+        return Iterators.forArray(
+                "cactus_green",
+                "dandelion_yellow",
+                "rose_red",
+                "sign",
+                "zombie_pigman_spawn_egg"
         );
     }
 }

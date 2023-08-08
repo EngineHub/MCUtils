@@ -17,7 +17,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.enginehub.util.minecraft.util.GameSetupUtils.*;
+import static org.enginehub.util.minecraft.util.GameSetupUtils.getServerRegistry;
+import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
 public class DataVersionDumper extends AbstractDumper {
 
@@ -46,11 +47,11 @@ public class DataVersionDumper extends AbstractDumper {
         Map<String, List<String>> tagCollector = new TreeMap<>();
 
         registry.streamTagsAndEntries().forEach(tagPair ->
-            tagCollector.put(tagPair.getFirst().id().toString(), tagPair.getSecond().stream()
-                .map(entry -> checkNotNull(registry.getKey(entry.value())))
-                .map(Optional::toString)
-                .sorted()
-                .collect(Collectors.toList())));
+                tagCollector.put(tagPair.getFirst().id().toString(), tagPair.getSecond().stream()
+                        .map(entry -> checkNotNull(registry.getKey(entry.value())))
+                        .map(Optional::toString)
+                        .sorted()
+                        .collect(Collectors.toList())));
 
         return tagCollector;
     }
@@ -90,10 +91,10 @@ public class DataVersionDumper extends AbstractDumper {
             if (!block.getDefaultState().getEntries().isEmpty()) {
                 List<String> bits = new ArrayList<>();
                 block.getDefaultState().getEntries().entrySet().stream()
-                    .sorted(Comparator.comparing(e -> e.getKey().getName()))
-                    .forEach(e ->
-                        bits.add(e.getKey().getName() + "=" + e.getValue().toString().toLowerCase())
-                    );
+                        .sorted(Comparator.comparing(e -> e.getKey().getName()))
+                        .forEach(e ->
+                                bits.add(e.getKey().getName() + "=" + e.getValue().toString().toLowerCase())
+                        );
                 defaultState.append("[").append(String.join(",", bits)).append("]");
             }
             bl.put("defaultstate", defaultState.toString());
@@ -128,7 +129,7 @@ public class DataVersionDumper extends AbstractDumper {
         output.put("entitytags", entityTags);
 
         try {
-            Files.write(gson.toJson(output), file, StandardCharsets.UTF_8);
+            Files.asCharSink(file, StandardCharsets.UTF_8).write(gson.toJson(output));
         } catch (IOException e) {
             e.printStackTrace();
         }

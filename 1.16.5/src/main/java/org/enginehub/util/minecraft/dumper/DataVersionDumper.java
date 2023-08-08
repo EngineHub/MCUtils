@@ -48,11 +48,11 @@ public class DataVersionDumper extends AbstractDumper {
         Map<String, List<String>> tagCollector = new TreeMap<>();
 
         provider.getTags().forEach((key, value) ->
-            tagCollector.put(key.toString(), value.values().stream()
-                .map(entry -> checkNotNull(registry.getId(entry)))
-                .map(Identifier::toString)
-                .sorted()
-                .collect(Collectors.toList())));
+                tagCollector.put(key.toString(), value.values().stream()
+                        .map(entry -> checkNotNull(registry.getId(entry)))
+                        .map(Identifier::toString)
+                        .sorted()
+                        .collect(Collectors.toList())));
 
         return tagCollector;
     }
@@ -92,10 +92,10 @@ public class DataVersionDumper extends AbstractDumper {
             if (!block.getDefaultState().getEntries().isEmpty()) {
                 List<String> bits = new ArrayList<>();
                 block.getDefaultState().getEntries().entrySet().stream()
-                    .sorted(Comparator.comparing(e -> e.getKey().getName()))
-                    .forEach(e ->
-                        bits.add(e.getKey().getName() + "=" + e.getValue().toString().toLowerCase())
-                    );
+                        .sorted(Comparator.comparing(e -> e.getKey().getName()))
+                        .forEach(e ->
+                                bits.add(e.getKey().getName() + "=" + e.getValue().toString().toLowerCase())
+                        );
                 defaultState.append("[").append(String.join(",", bits)).append("]");
             }
             bl.put("defaultstate", defaultState.toString());
@@ -131,7 +131,7 @@ public class DataVersionDumper extends AbstractDumper {
         output.put("entitytags", entityTags);
 
         try {
-            Files.write(gson.toJson(output), file, StandardCharsets.UTF_8);
+            Files.asCharSink(file, StandardCharsets.UTF_8).write(gson.toJson(output));
         } catch (IOException e) {
             e.printStackTrace();
         }
