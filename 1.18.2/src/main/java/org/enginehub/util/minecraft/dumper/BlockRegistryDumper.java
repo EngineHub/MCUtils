@@ -6,21 +6,21 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockEntityProvider;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Material;
-import net.minecraft.block.piston.PistonBehavior;
-import net.minecraft.util.Clearable;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Language;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.EmptyBlockView;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.Vec3i;
+import net.minecraft.locale.Language;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Clearable;
+import net.minecraft.world.level.EmptyBlockGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +30,7 @@ import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
 public class BlockRegistryDumper extends RegistryDumper<Block> {
 
-    private static final Box FULL_CUBE = Box.from(Vec3d.ZERO);
+    private static final AABB FULL_CUBE = AABB.unitCubeFromLowerCorner(Vec3.ZERO);
 
     public BlockRegistryDumper(File file) {
         super(file);
@@ -46,12 +46,12 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
         super.registerAdapters(builder);
 
         builder.registerTypeAdapter(Vec3i.class, new Vec3iAdapter());
-        builder.registerTypeAdapter(Vec3d.class, new Vec3dAdapter());
+        builder.registerTypeAdapter(Vec3.class, new Vec3dAdapter());
     }
 
     @Override
     public Collection<String> getIds() {
-        return Registry.BLOCK.getIds().stream().map(Identifier::toString).toList();
+        return Registry.BLOCK.keySet().stream().map(ResourceLocation::toString).toList();
     }
 
     @Override
@@ -61,42 +61,42 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
 
     @Override
     public List<Map<String, Object>> getProperties(String resourceLocation) {
-        Block block = Registry.BLOCK.get(new Identifier(resourceLocation));
+        Block block = Registry.BLOCK.get(new ResourceLocation(resourceLocation));
         Map<String, Object> map = new TreeMap<>();
         map.put("id", resourceLocation);
-        map.put("localizedName", Language.getInstance().get(block.getTranslationKey()));
+        map.put("localizedName", Language.getInstance().getOrDefault(block.getDescriptionId()));
         map.put("material", getMaterial(block));
         return Lists.newArrayList(map);
     }
 
     private Map<String, Object> getMaterial(Block b) {
-        BlockState bs = b.getDefaultState();
+        BlockState bs = b.defaultBlockState();
         Map<String, Object> map = new TreeMap<>();
-        map.put("powerSource", bs.emitsRedstonePower());
-        map.put("lightValue", bs.getLuminance());
-        map.put("hardness", bs.getHardness(EmptyBlockView.INSTANCE, BlockPos.ORIGIN));
-        map.put("resistance", b.getBlastResistance());
-        map.put("ticksRandomly", b.hasRandomTicks(bs));
-        VoxelShape vs = bs.getCollisionShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN);
-        map.put("fullCube", !vs.isEmpty() && isFullCube(vs.getBoundingBox()));
-        map.put("slipperiness", b.getSlipperiness());
-        map.put("translucent", bs.isTranslucent(EmptyBlockView.INSTANCE, BlockPos.ORIGIN));
+        map.put("powerSource", bs.isSignalSource());
+        map.put("lightValue", bs.getLightEmission());
+        map.put("hardness", bs.getDestroySpeed(EmptyBlockGetter.INSTANCE, BlockPos.ZERO));
+        map.put("resistance", b.getExplosionResistance());
+        map.put("ticksRandomly", b.isRandomlyTicking(bs));
+        VoxelShape vs = bs.getCollisionShape(EmptyBlockGetter.INSTANCE, BlockPos.ZERO);
+        map.put("fullCube", !vs.isEmpty() && isFullCube(vs.bounds()));
+        map.put("slipperiness", b.getFriction());
+        map.put("translucent", bs.propagatesSkylightDown(EmptyBlockGetter.INSTANCE, BlockPos.ZERO));
         Material m = bs.getMaterial();
         map.put("liquid", m.isLiquid());
         map.put("solid", m.isSolid());
-        map.put("movementBlocker", m.blocksMovement());
-        map.put("burnable", m.isBurnable());
-        map.put("opaque", m.blocksLight());
+        map.put("movementBlocker", m.blocksMotion());
+        map.put("burnable", m.isFlammable());
+        map.put("opaque", m.isSolidBlocking());
         map.put("replacedDuringPlacement", m.isReplaceable());
-        map.put("toolRequired", bs.isToolRequired());
-        map.put("fragileWhenPushed", m.getPistonBehavior() == PistonBehavior.DESTROY);
-        map.put("unpushable", m.getPistonBehavior() == PistonBehavior.BLOCK);
-        map.put("mapColor", rgb(m.getColor().color));
-        map.put("hasContainer", b instanceof BlockEntityProvider bep && bep.createBlockEntity(BlockPos.ORIGIN, bs) instanceof Clearable);
+        map.put("toolRequired", bs.requiresCorrectToolForDrops());
+        map.put("fragileWhenPushed", m.getPushReaction() == PushReaction.DESTROY);
+        map.put("unpushable", m.getPushReaction() == PushReaction.BLOCK);
+        map.put("mapColor", rgb(m.getColor().col));
+        map.put("hasContainer", b instanceof EntityBlock bep && bep.newBlockEntity(BlockPos.ZERO, bs) instanceof Clearable);
         return map;
     }
 
-    private boolean isFullCube(Box aabb) {
+    private boolean isFullCube(AABB aabb) {
         return aabb.equals(FULL_CUBE);
     }
 
@@ -124,18 +124,18 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
         }
     }
 
-    public static class Vec3dAdapter extends TypeAdapter<Vec3d> {
+    public static class Vec3dAdapter extends TypeAdapter<Vec3> {
         @Override
-        public Vec3d read(final JsonReader in) {
+        public Vec3 read(final JsonReader in) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void write(final JsonWriter out, final Vec3d vec) throws IOException {
+        public void write(final JsonWriter out, final Vec3 vec) throws IOException {
             out.beginArray();
-            out.value(vec.getX());
-            out.value(vec.getY());
-            out.value(vec.getZ());
+            out.value(vec.x());
+            out.value(vec.y());
+            out.value(vec.z());
             out.endArray();
         }
     }

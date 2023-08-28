@@ -1,13 +1,17 @@
 package org.enginehub.util.minecraft.util;
 
 import com.google.common.util.concurrent.Futures;
-import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
-import net.minecraft.resource.*;
-import net.minecraft.server.DataPackContents;
+import net.minecraft.commands.Commands;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.server.Bootstrap;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.util.registry.DynamicRegistryManager;
+import net.minecraft.server.ReloadableServerResources;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.repository.PackRepository;
+import net.minecraft.server.packs.repository.ServerPacksSource;
+import net.minecraft.server.packs.resources.MultiPackResourceManager;
+import net.minecraft.world.level.DataPackConfig;
 import org.enginehub.util.minecraft.dumper.AbstractDumper;
 
 import java.io.File;
@@ -19,39 +23,38 @@ import java.util.concurrent.locks.ReentrantLock;
 public final class GameSetupUtils {
 
     public static void setupGame() {
-        SharedConstants.createGameVersion();
-        // FIXME Bootstrap can not properly initialize for 1.18.2 because calling it leads to an IllegalAccessError later down the call stack
-        Bootstrap.initialize();
+        SharedConstants.tryDetectVersion();
+        Bootstrap.bootStrap();
 
-        AbstractDumper.OUTPUT = new File("output/" + SharedConstants.getGameVersion().getName());
+        AbstractDumper.OUTPUT = new File("output/" + SharedConstants.getCurrentVersion().getName());
     }
 
     private static final Lock lock = new ReentrantLock();
-    private static DataPackContents SERVER_RESOURCES;
-    private static DynamicRegistryManager SERVER_REGISTRY;
+    private static ReloadableServerResources SERVER_RESOURCES;
+    private static RegistryAccess SERVER_REGISTRY;
 
-    public static DataPackContents getServerResources() {
+    public static ReloadableServerResources getServerResources() {
         setupGame();
         lock.lock();
         try {
-            DataPackContents localResources = SERVER_RESOURCES;
+            ReloadableServerResources localResources = SERVER_RESOURCES;
             if (localResources != null) {
                 return localResources;
             }
-            ResourcePackManager resourcePackManager = new ResourcePackManager(
-                    ResourceType.SERVER_DATA,
-                    new VanillaDataPackProvider()
+            PackRepository resourcePackManager = new PackRepository(
+                    PackType.SERVER_DATA,
+                    new ServerPacksSource()
             );
-            MinecraftServer.loadDataPacks(resourcePackManager, DataPackSettings.SAFE_MODE, true);
-            DynamicRegistryManager.Immutable immutable = DynamicRegistryManager.BUILTIN.get();
-            LifecycledResourceManagerImpl lifecycledResourceManager = new LifecycledResourceManagerImpl(ResourceType.SERVER_DATA, resourcePackManager.createResourcePacks());
-            CompletableFuture<DataPackContents> completableFuture = (DataPackContents.reload(lifecycledResourceManager, immutable, CommandManager.RegistrationEnvironment.DEDICATED, 0, ForkJoinPool.commonPool(), Runnable::run).whenComplete((dataPackContents, throwable) -> {
+            MinecraftServer.configurePackRepository(resourcePackManager, DataPackConfig.DEFAULT, true);
+            RegistryAccess.Frozen immutable = RegistryAccess.BUILTIN.get();
+            MultiPackResourceManager lifecycledResourceManager = new MultiPackResourceManager(PackType.SERVER_DATA, resourcePackManager.openAllSelected());
+            CompletableFuture<ReloadableServerResources> completableFuture = (ReloadableServerResources.loadResources(lifecycledResourceManager, immutable, Commands.CommandSelection.DEDICATED, 0, ForkJoinPool.commonPool(), Runnable::run).whenComplete((dataPackContents, throwable) -> {
                 if (throwable != null) {
                     lifecycledResourceManager.close();
                 }
             }));
-            DataPackContents manager = Futures.getUnchecked(completableFuture);
-            manager.refresh(immutable);
+            ReloadableServerResources manager = Futures.getUnchecked(completableFuture);
+            manager.updateRegistryTags(immutable);
             SERVER_RESOURCES = manager;
             return manager;
         } finally {
@@ -59,14 +62,14 @@ public final class GameSetupUtils {
         }
     }
 
-    public static DynamicRegistryManager getServerRegistry() {
+    public static RegistryAccess getServerRegistry() {
         lock.lock();
         try {
-            DynamicRegistryManager localResources = SERVER_REGISTRY;
+            RegistryAccess localResources = SERVER_REGISTRY;
             if (localResources != null) {
                 return localResources;
             }
-            DynamicRegistryManager manager = DynamicRegistryManager.BUILTIN.get();
+            RegistryAccess manager = RegistryAccess.BUILTIN.get();
             SERVER_REGISTRY = manager;
             return manager;
         } finally {
