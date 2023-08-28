@@ -3,8 +3,8 @@ package org.enginehub.util.minecraft.dumper;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.Iterators;
 import com.squareup.javapoet.ClassName;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.Iterator;
 
@@ -24,7 +24,7 @@ public class BlockTypesDumper extends RegistryClassDumper {
 
     @Override
     protected Iterator<String> getIds() {
-        return Registry.BLOCK.getIds().stream().map(Identifier::getPath).iterator();
+        return Registry.BLOCK.keySet().stream().map(ResourceLocation::getPath).iterator();
     }
 
     @Override

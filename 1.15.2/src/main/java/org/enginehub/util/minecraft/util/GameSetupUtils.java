@@ -1,7 +1,7 @@
 package org.enginehub.util.minecraft.util;
 
-import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
+import net.minecraft.server.Bootstrap;
 import org.enginehub.util.minecraft.dumper.AbstractDumper;
 
 import java.io.File;
@@ -9,9 +9,9 @@ import java.io.File;
 public final class GameSetupUtils {
 
     public static void setupGame() {
-        SharedConstants.getGameVersion();
-        Bootstrap.initialize();
+        SharedConstants.getCurrentVersion();
+        Bootstrap.bootStrap();
 
-        AbstractDumper.OUTPUT = new File("output/" + SharedConstants.getGameVersion().getName());
+        AbstractDumper.OUTPUT = new File("output/" + SharedConstants.getCurrentVersion().getName());
     }
 }
