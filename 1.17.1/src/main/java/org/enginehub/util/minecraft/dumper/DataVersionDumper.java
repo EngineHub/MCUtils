@@ -5,12 +5,12 @@ import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.SharedConstants;
-import net.minecraft.block.Block;
-import net.minecraft.state.property.*;
-import net.minecraft.tag.TagGroup;
-import net.minecraft.tag.TagManager;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagCollection;
+import net.minecraft.tags.TagContainer;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +32,7 @@ public class DataVersionDumper extends AbstractDumper {
     public static class Default implements Dumper {
         @Override
         public void run() {
-            File file = new File(OUTPUT, SharedConstants.getGameVersion().getWorldVersion() + ".json");
+            File file = new File(OUTPUT, SharedConstants.getCurrentVersion().getWorldVersion() + ".json");
             new DataVersionDumper(file).run();
         }
     }
@@ -44,13 +44,13 @@ public class DataVersionDumper extends AbstractDumper {
         this.file = file;
     }
 
-    private <T> Map<String, List<String>> getTags(TagGroup<T> provider, Registry<T> registry) {
+    private <T> Map<String, List<String>> getTags(TagCollection<T> provider, Registry<T> registry) {
         Map<String, List<String>> tagCollector = new TreeMap<>();
 
-        provider.getTags().forEach((key, value) ->
-                tagCollector.put(key.toString(), value.values().stream()
-                        .map(entry -> checkNotNull(registry.getId(entry)))
-                        .map(Identifier::toString)
+        provider.getAllTags().forEach((key, value) ->
+                tagCollector.put(key.toString(), value.getValues().stream()
+                        .map(entry -> checkNotNull(registry.getKey(entry)))
+                        .map(ResourceLocation::toString)
                         .sorted()
                         .collect(Collectors.toList())));
 
@@ -61,7 +61,7 @@ public class DataVersionDumper extends AbstractDumper {
     private String getTypeName(Class<? extends Property> clazz) {
         if (clazz == EnumProperty.class) {
             return "enum";
-        } else if (clazz == IntProperty.class) {
+        } else if (clazz == IntegerProperty.class) {
             return "int";
         } else if (clazz == BooleanProperty.class) {
             return "bool";
@@ -76,22 +76,22 @@ public class DataVersionDumper extends AbstractDumper {
     public void run() {
         // Blocks
         Map<String, Map<String, Object>> blocks = new TreeMap<>();
-        for (Identifier blockId : Registry.BLOCK.getIds()) {
+        for (ResourceLocation blockId : Registry.BLOCK.keySet()) {
             Map<String, Object> bl = new TreeMap<>();
             Block block = Registry.BLOCK.get(blockId);
             Map<String, Object> properties = new TreeMap<>();
-            for (Property<?> prop : block.getDefaultState().getProperties()) {
+            for (Property<?> prop : block.defaultBlockState().getProperties()) {
                 Map<String, Object> propertyValues = new TreeMap<>();
-                propertyValues.put("values", prop.getValues().stream().map(s -> s.toString().toLowerCase()).collect(Collectors.toList()));
+                propertyValues.put("values", prop.getPossibleValues().stream().map(s -> s.toString().toLowerCase()).collect(Collectors.toList()));
                 propertyValues.put("type", getTypeName(prop.getClass()));
                 properties.put(prop.getName(), propertyValues);
             }
             bl.put("properties", properties);
             StringBuilder defaultState = new StringBuilder();
             defaultState.append(blockId.toString());
-            if (!block.getDefaultState().getEntries().isEmpty()) {
+            if (!block.defaultBlockState().getValues().isEmpty()) {
                 List<String> bits = new ArrayList<>();
-                block.getDefaultState().getEntries().entrySet().stream()
+                block.defaultBlockState().getValues().entrySet().stream()
                         .sorted(Comparator.comparing(e -> e.getKey().getName()))
                         .forEach(e ->
                                 bits.add(e.getKey().getName() + "=" + e.getValue().toString().toLowerCase())
@@ -103,23 +103,23 @@ public class DataVersionDumper extends AbstractDumper {
         }
 
         // Items
-        List<String> items = Registry.ITEM.getIds().stream().sorted().map(Identifier::toString).collect(Collectors.toList());
+        List<String> items = Registry.ITEM.keySet().stream().sorted().map(ResourceLocation::toString).collect(Collectors.toList());
 
         // Entities
-        List<String> entities = Registry.ENTITY_TYPE.getIds().stream().sorted().map(Identifier::toString).collect(Collectors.toList());
+        List<String> entities = Registry.ENTITY_TYPE.keySet().stream().sorted().map(ResourceLocation::toString).collect(Collectors.toList());
 
         // Biomes
-        List<String> biomes = getServerRegistry().get(Registry.BIOME_KEY).getIds().stream().sorted().map(Identifier::toString).collect(Collectors.toList());
+        List<String> biomes = getServerRegistry().registryOrThrow(Registry.BIOME_REGISTRY).keySet().stream().sorted().map(ResourceLocation::toString).collect(Collectors.toList());
 
-        TagManager tagManager = getServerResources().getRegistryTagManager();
+        TagContainer tagManager = getServerResources().getTags();
         // BlockTags
-        Map<String, List<String>> blockTags = getTags(tagManager.getOrCreateTagGroup(Registry.BLOCK_KEY), Registry.BLOCK);
+        Map<String, List<String>> blockTags = getTags(tagManager.getOrEmpty(Registry.BLOCK_REGISTRY), Registry.BLOCK);
 
         // ItemTags
-        Map<String, List<String>> itemTags = getTags(tagManager.getOrCreateTagGroup(Registry.ITEM_KEY), Registry.ITEM);
+        Map<String, List<String>> itemTags = getTags(tagManager.getOrEmpty(Registry.ITEM_REGISTRY), Registry.ITEM);
 
         // EntityTags
-        Map<String, List<String>> entityTags = getTags(tagManager.getOrCreateTagGroup(Registry.ENTITY_TYPE_KEY), Registry.ENTITY_TYPE);
+        Map<String, List<String>> entityTags = getTags(tagManager.getOrEmpty(Registry.ENTITY_TYPE_REGISTRY), Registry.ENTITY_TYPE);
 
         Map<String, Object> output = new TreeMap<>();
         output.put("blocks", blocks);

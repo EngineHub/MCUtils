@@ -1,12 +1,16 @@
 package org.enginehub.util.minecraft.util;
 
 import com.google.common.util.concurrent.Futures;
-import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
-import net.minecraft.resource.*;
+import net.minecraft.commands.Commands;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.server.Bootstrap;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.util.registry.DynamicRegistryManager;
+import net.minecraft.server.ServerResources;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.repository.PackRepository;
+import net.minecraft.server.packs.repository.ServerPacksSource;
+import net.minecraft.world.level.DataPackConfig;
 import org.enginehub.util.minecraft.dumper.AbstractDumper;
 
 import java.io.File;
@@ -18,41 +22,41 @@ import java.util.concurrent.locks.ReentrantLock;
 public final class GameSetupUtils {
 
     public static void setupGame() {
-        SharedConstants.createGameVersion();
-        Bootstrap.initialize();
+        SharedConstants.tryDetectVersion();
+        Bootstrap.bootStrap();
 
-        AbstractDumper.OUTPUT = new File("output/" + SharedConstants.getGameVersion().getName());
+        AbstractDumper.OUTPUT = new File("output/" + SharedConstants.getCurrentVersion().getName());
     }
 
     private static final Lock lock = new ReentrantLock();
-    private static ServerResourceManager SERVER_RESOURCES;
-    private static DynamicRegistryManager SERVER_REGISTRY;
+    private static ServerResources SERVER_RESOURCES;
+    private static RegistryAccess SERVER_REGISTRY;
 
-    public static ServerResourceManager getServerResources() {
+    public static ServerResources getServerResources() {
         setupGame();
         lock.lock();
         try {
-            ServerResourceManager localResources = SERVER_RESOURCES;
+            ServerResources localResources = SERVER_RESOURCES;
             if (localResources != null) {
                 return localResources;
             }
-            ResourcePackManager resourcePackManager = new ResourcePackManager(
-                    ResourceType.SERVER_DATA,
-                    new VanillaDataPackProvider()
+            PackRepository resourcePackManager = new PackRepository(
+                    PackType.SERVER_DATA,
+                    new ServerPacksSource()
             );
-            MinecraftServer.loadDataPacks(resourcePackManager, DataPackSettings.SAFE_MODE, true);
-            DynamicRegistryManager.Impl impl = DynamicRegistryManager.create();
-            CompletableFuture<ServerResourceManager> completableFuture = ServerResourceManager.reload(
-                    resourcePackManager.createResourcePacks(),
+            MinecraftServer.configurePackRepository(resourcePackManager, DataPackConfig.DEFAULT, true);
+            RegistryAccess.RegistryHolder impl = RegistryAccess.builtin();
+            CompletableFuture<ServerResources> completableFuture = ServerResources.loadResources(
+                    resourcePackManager.openAllSelected(),
                     impl,
-                    CommandManager.RegistrationEnvironment.DEDICATED,
+                    Commands.CommandSelection.DEDICATED,
                     // permission level doesn't matter
                     0,
                     ForkJoinPool.commonPool(),
                     Runnable::run
             );
-            ServerResourceManager manager = Futures.getUnchecked(completableFuture);
-            manager.loadRegistryTags();
+            ServerResources manager = Futures.getUnchecked(completableFuture);
+            manager.updateGlobals();
             SERVER_RESOURCES = manager;
             return manager;
         } finally {
@@ -60,14 +64,14 @@ public final class GameSetupUtils {
         }
     }
 
-    public static DynamicRegistryManager getServerRegistry() {
+    public static RegistryAccess getServerRegistry() {
         lock.lock();
         try {
-            DynamicRegistryManager localResources = SERVER_REGISTRY;
+            RegistryAccess localResources = SERVER_REGISTRY;
             if (localResources != null) {
                 return localResources;
             }
-            DynamicRegistryManager manager = DynamicRegistryManager.create();
+            RegistryAccess manager = RegistryAccess.builtin();
             SERVER_REGISTRY = manager;
             return manager;
         } finally {

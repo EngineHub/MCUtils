@@ -2,8 +2,8 @@ package org.enginehub.util.minecraft.dumper;
 
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.Iterator;
 
@@ -25,6 +25,6 @@ public class EntityTypeCategoriesDumper extends RegistryClassDumper {
 
     @Override
     protected Iterator<String> getIds() {
-        return getServerResources().getRegistryTagManager().getOrCreateTagGroup(Registry.ENTITY_TYPE_KEY).getTagIds().stream().map(Identifier::getPath).iterator();
+        return getServerResources().getTags().getOrEmpty(Registry.ENTITY_TYPE_REGISTRY).getAvailableTags().stream().map(ResourceLocation::getPath).iterator();
     }
 }
