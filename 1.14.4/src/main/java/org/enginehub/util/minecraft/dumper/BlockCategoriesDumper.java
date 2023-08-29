@@ -2,8 +2,8 @@ package org.enginehub.util.minecraft.dumper;
 
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 
 import java.util.Iterator;
 
@@ -24,6 +24,6 @@ public class BlockCategoriesDumper extends RegistryClassDumper {
 
     @Override
     protected Iterator<String> getIds() {
-        return BlockTags.getContainer().getKeys().stream().map(Identifier::getPath).iterator();
+        return BlockTags.getAllTags().getAvailableTags().stream().map(ResourceLocation::getPath).iterator();
     }
 }

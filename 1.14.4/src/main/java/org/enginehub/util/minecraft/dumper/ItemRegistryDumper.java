@@ -1,9 +1,9 @@
 package org.enginehub.util.minecraft.dumper;
 
 import com.google.auto.service.AutoService;
-import net.minecraft.item.Item;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 
 import java.io.File;
 import java.util.*;
@@ -31,7 +31,7 @@ public class ItemRegistryDumper extends RegistryDumper<Item> {
 
     @Override
     public Collection<String> getIds() {
-        return Registry.ITEM.getIds().stream().map(Identifier::toString).toList();
+        return Registry.ITEM.keySet().stream().map(ResourceLocation::toString).toList();
     }
 
     @Override
@@ -41,7 +41,7 @@ public class ItemRegistryDumper extends RegistryDumper<Item> {
 
     @Override
     public List<Map<String, Object>> getProperties(String resourceLocation) {
-        Item item = Registry.ITEM.get(new Identifier(resourceLocation));
+        Item item = Registry.ITEM.get(new ResourceLocation(resourceLocation));
         List<Map<String, Object>> maps = new ArrayList<>();
         maps.add(getPropertiesForItem(resourceLocation, item));
         return maps;
@@ -50,10 +50,10 @@ public class ItemRegistryDumper extends RegistryDumper<Item> {
     private Map<String, Object> getPropertiesForItem(String resourceLocation, Item item) {
         Map<String, Object> map = new TreeMap<>();
         map.put("id", resourceLocation);
-        map.put("unlocalizedName", item.getTranslationKey(item.getStackForRender()));
-        map.put("localizedName", item.getName(item.getStackForRender()).getString());
+        map.put("unlocalizedName", item.getDescriptionId(item.getDefaultInstance()));
+        map.put("localizedName", item.getName(item.getDefaultInstance()).getString());
         map.put("maxDamage", item.getMaxDamage());
-        map.put("maxStackSize", item.getMaxCount());
+        map.put("maxStackSize", item.getMaxStackSize());
         return map;
     }
 }
