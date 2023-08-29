@@ -85,7 +85,6 @@ public abstract class RegistryClassDumper extends AbstractDumper {
                     .build();
 
             try {
-                // TODO Try to migrate OUTPUT to a Path object
                 Path outputFile = OUTPUT.toPath().resolve(spec.name + ".java");
                 String content = fixContent(javaFile.toString());
                 MoreFiles.asCharSink(outputFile, StandardCharsets.UTF_8).write(content);
