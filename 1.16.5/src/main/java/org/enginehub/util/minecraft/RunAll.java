@@ -9,8 +9,7 @@ public class RunAll {
 
     public static void main(String[] args) {
         GameSetupUtils.setupGame();
-        GameSetupUtils.getServerResources();
-        GameSetupUtils.getServerRegistry();
+        GameSetupUtils.getServerRegistries();
         for (Dumper dumper : ServiceLoader.load(Dumper.class)) {
             System.out.println("Running dumper: " + dumper.getClass().getCanonicalName());
             dumper.run();
