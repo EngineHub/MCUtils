@@ -2,9 +2,9 @@ package org.enginehub.util.minecraft.dumper;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.Iterators;
-import com.squareup.javapoet.ClassName;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 
 import java.util.Iterator;
 
@@ -19,12 +19,17 @@ public class ItemTypesDumper extends RegistryClassDumper {
     }
 
     public ItemTypesDumper() {
-        super(ClassName.get("com.sk89q.worldedit.world.item", "ItemType"), true);
+        super("com.sk89q.worldedit.world.item", "Item");
     }
 
     @Override
     protected Iterator<String> getIds() {
         return Registry.ITEM.keySet().stream().map(ResourceLocation::getPath).iterator();
+    }
+
+    @Override
+    protected Iterator<String> getTags() {
+        return ItemTags.getAllTags().getAvailableTags().stream().map(ResourceLocation::getPath).iterator();
     }
 
     @Override

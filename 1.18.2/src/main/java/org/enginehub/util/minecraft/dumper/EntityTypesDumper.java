@@ -2,7 +2,6 @@ package org.enginehub.util.minecraft.dumper;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.Iterators;
-import com.squareup.javapoet.ClassName;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 
@@ -19,12 +18,17 @@ public class EntityTypesDumper extends RegistryClassDumper {
     }
 
     public EntityTypesDumper() {
-        super(ClassName.get("com.sk89q.worldedit.world.entity", "EntityType"), true);
+        super("com.sk89q.worldedit.world.entity", "Entity");
     }
 
     @Override
     protected Iterator<String> getIds() {
         return Registry.ENTITY_TYPE.keySet().stream().map(ResourceLocation::getPath).iterator();
+    }
+
+    @Override
+    protected Iterator<String> getTags() {
+        return Registry.ENTITY_TYPE.getTagNames().map(tagKey -> tagKey.location().getPath()).iterator();
     }
 
     @Override

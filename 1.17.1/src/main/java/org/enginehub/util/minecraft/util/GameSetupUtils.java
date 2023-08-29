@@ -45,7 +45,7 @@ public final class GameSetupUtils {
                     new ServerPacksSource()
             );
             MinecraftServer.configurePackRepository(resourcePackManager, DataPackConfig.DEFAULT, true);
-            RegistryAccess.RegistryHolder impl = RegistryAccess.builtin();
+            RegistryAccess.RegistryHolder impl = (RegistryAccess.RegistryHolder) getServerRegistry();
             CompletableFuture<ServerResources> completableFuture = ServerResources.loadResources(
                     resourcePackManager.openAllSelected(),
                     impl,

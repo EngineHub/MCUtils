@@ -2,7 +2,6 @@ package org.enginehub.util.minecraft.dumper;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.Iterators;
-import com.squareup.javapoet.ClassName;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 
@@ -20,12 +19,17 @@ public class BiomeTypesDumper extends RegistryClassDumper {
     }
 
     public BiomeTypesDumper() {
-        super(ClassName.get("com.sk89q.worldedit.world.biome", "BiomeType"), true);
+        super("com.sk89q.worldedit.world.biome", "Biome");
     }
 
     @Override
     protected Iterator<String> getIds() {
         return getServerRegistries().registryOrThrow(Registries.BIOME).keySet().stream().map(ResourceLocation::getPath).iterator();
+    }
+
+    @Override
+    protected Iterator<String> getTags() {
+        return getServerRegistries().registryOrThrow(Registries.BIOME).getTagNames().map(tagKey -> tagKey.location().getPath()).iterator();
     }
 
     @Override

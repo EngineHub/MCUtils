@@ -2,7 +2,6 @@ package org.enginehub.util.minecraft.dumper;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.Iterators;
-import com.squareup.javapoet.ClassName;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 
@@ -19,7 +18,7 @@ public class BlockTypesDumper extends RegistryClassDumper {
     }
 
     public BlockTypesDumper() {
-        super(ClassName.get("com.sk89q.worldedit.world.block", "BlockType"), true);
+        super("com.sk89q.worldedit.world.block", "Block");
     }
 
     @Override
@@ -28,11 +27,23 @@ public class BlockTypesDumper extends RegistryClassDumper {
     }
 
     @Override
+    protected Iterator<String> getTags() {
+        return Registry.BLOCK.getTagNames().map(tagKey -> tagKey.location().getPath()).iterator();
+    }
+
+    @Override
     protected Iterator<String> getDeprecatedIds() {
         return Iterators.forArray(
                 "sign",
                 "wall_sign",
                 "grass_path"
+        );
+    }
+
+    @Override
+    protected Iterator<String> getDeprecatedTags() {
+        return Iterators.forArray(
+                "dirt_like"
         );
     }
 }

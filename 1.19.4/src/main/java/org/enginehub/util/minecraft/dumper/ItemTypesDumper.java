@@ -2,7 +2,6 @@ package org.enginehub.util.minecraft.dumper;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.Iterators;
-import com.squareup.javapoet.ClassName;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 
@@ -20,12 +19,17 @@ public class ItemTypesDumper extends RegistryClassDumper {
     }
 
     public ItemTypesDumper() {
-        super(ClassName.get("com.sk89q.worldedit.world.item", "ItemType"), true);
+        super("com.sk89q.worldedit.world.item", "Item");
     }
 
     @Override
     protected Iterator<String> getIds() {
         return getServerRegistries().registryOrThrow(Registries.ITEM).keySet().stream().map(ResourceLocation::getPath).iterator();
+    }
+
+    @Override
+    protected Iterator<String> getTags() {
+        return getServerRegistries().registryOrThrow(Registries.ITEM).getTagNames().map(tagKey -> tagKey.location().getPath()).iterator();
     }
 
     @Override
@@ -37,6 +41,15 @@ public class ItemTypesDumper extends RegistryClassDumper {
                 "sign",
                 "zombie_pigman_spawn_egg",
                 "grass_path"
+        );
+    }
+
+    @Override
+    protected Iterator<String> getDeprecatedTags() {
+        return Iterators.forArray(
+                "carpets",
+                "furnace_materials",
+                "occludes_vibration_signals"
         );
     }
 }

@@ -7,8 +7,7 @@ import com.google.gson.GsonBuilder;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagCollection;
-import net.minecraft.tags.TagManager;
+import net.minecraft.tags.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.*;
 
@@ -107,15 +106,14 @@ public class DataVersionDumper extends AbstractDumper {
         // Biomes
         List<String> biomes = Registry.BIOME.keySet().stream().sorted().map(ResourceLocation::toString).collect(Collectors.toList());
 
-        TagManager tagManager = new TagManager();
         // BlockTags
-        Map<String, List<String>> blockTags = getTags(tagManager.getBlocks(), Registry.BLOCK);
+        Map<String, List<String>> blockTags = getTags(BlockTags.getAllTags(), Registry.BLOCK);
 
         // ItemTags
-        Map<String, List<String>> itemTags = getTags(tagManager.getItems(), Registry.ITEM);
+        Map<String, List<String>> itemTags = getTags(ItemTags.getAllTags(), Registry.ITEM);
 
         // EntityTags
-        Map<String, List<String>> entityTags = getTags(tagManager.getEntityTypes(), Registry.ENTITY_TYPE);
+        Map<String, List<String>> entityTags = getTags(EntityTypeTags.getAllTags(), Registry.ENTITY_TYPE);
 
         Map<String, Object> output = new TreeMap<>();
         output.put("blocks", blocks);
