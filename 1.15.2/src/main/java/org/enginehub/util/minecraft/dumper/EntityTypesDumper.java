@@ -1,0 +1,33 @@
+package org.enginehub.util.minecraft.dumper;
+
+import com.google.auto.service.AutoService;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.EntityTypeTags;
+
+import java.util.Iterator;
+
+import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
+
+@AutoService(Dumper.class)
+public class EntityTypesDumper extends RegistryClassDumper {
+
+    public static void main(String[] args) {
+        setupGame();
+        new EntityTypesDumper().run();
+    }
+
+    public EntityTypesDumper() {
+        super("com.sk89q.worldedit.world.entity", "Entity");
+    }
+
+    @Override
+    protected Iterator<String> getIds() {
+        return Registry.ENTITY_TYPE.keySet().stream().map(ResourceLocation::getPath).iterator();
+    }
+
+    @Override
+    protected Iterator<String> getTags() {
+        return EntityTypeTags.getAllTags().getAvailableTags().stream().map(ResourceLocation::getPath).iterator();
+    }
+}

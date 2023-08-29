@@ -1,31 +1,32 @@
-import net.fabricmc.loom.api.LoomGradleExtensionAPI
-
 plugins {
-    id("fabric-loom") version "0.12.47"
+    java
 }
 
-repositories {
-    maven {
-        name = "Fabric"
-        url = uri("https://maven.fabricmc.net/")
+allprojects {
+    apply<JavaPlugin>()
+
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+        maven {
+            name = "Fabric"
+            url = uri("https://maven.fabricmc.net/")
+        }
     }
-    mavenCentral()
+
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(17))
+        }
+    }
 }
 
-dependencies {
-    "minecraft"("com.mojang:minecraft:1.20.1")
-    "mappings"(project.the<LoomGradleExtensionAPI>().officialMojangMappings())
-    "modImplementation"("net.fabricmc:fabric-loader:0.14.21")
-
-    "implementation"("com.squareup:javapoet:1.13.0")
-
-    val autoServiceVersion = "1.0.1"
-    "compileOnly"("com.google.auto.service:auto-service-annotations:$autoServiceVersion")
-    "annotationProcessor"("com.google.auto.service:auto-service:$autoServiceVersion")
-}
-
-plugins.withId("java") {
-    the<JavaPluginExtension>().toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+subprojects {
+    dependencies {
+        implementation("com.google.guava:guava:31.1-jre")
+        implementation("com.google.code.gson:gson:2.10.1")
+        implementation("com.squareup:javapoet:${project.property("javapoet.version")}")
+        compileOnly("com.google.auto.service:auto-service-annotations:${project.property("autoservice.version")}")
+        annotationProcessor("com.google.auto.service:auto-service:${project.property("autoservice.version")}")
     }
 }
