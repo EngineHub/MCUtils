@@ -19,6 +19,7 @@ import net.minecraft.world.level.LevelSettings;
 import net.minecraft.world.level.WorldDataConfiguration;
 import net.minecraft.world.level.levelgen.WorldOptions;
 import net.minecraft.world.level.storage.PrimaryLevelData;
+import net.minecraft.world.level.validation.DirectoryValidator;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.locks.Lock;
@@ -46,9 +47,8 @@ public final class GameSetupUtils {
             if (localResources != null) {
                 return localResources;
             }
-            PackRepository resourcePackManager = new PackRepository(
-                new ServerPacksSource()
-            );
+
+            PackRepository resourcePackManager = new PackRepository(new ServerPacksSource(new DirectoryValidator(path -> true)));
             WorldDataConfiguration wdc = new WorldDataConfiguration(DataPackConfig.DEFAULT, FeatureFlags.DEFAULT_FLAGS);
             WorldLoader.PackConfig dataPacks = new WorldLoader.PackConfig(resourcePackManager, wdc, false, true);
             WorldLoader.InitConfig serverConfig = new WorldLoader.InitConfig(dataPacks, Commands.CommandSelection.DEDICATED, 4);
