@@ -30,7 +30,8 @@ public class BlockTypesDumper extends RegistryClassDumper {
         return Iterators.forArray(
             new ResourceLocation("sign"),
             new ResourceLocation("wall_sign"),
-            new ResourceLocation("grass_path")
+            new ResourceLocation("grass_path"),
+            new ResourceLocation("grass")
         );
     }
 

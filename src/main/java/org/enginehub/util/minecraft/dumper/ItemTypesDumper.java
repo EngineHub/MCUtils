@@ -33,7 +33,8 @@ public class ItemTypesDumper extends RegistryClassDumper {
             new ResourceLocation("rose_red"),
             new ResourceLocation("sign"),
             new ResourceLocation("zombie_pigman_spawn_egg"),
-            new ResourceLocation("grass_path")
+            new ResourceLocation("grass_path"),
+            new ResourceLocation("grass")
         );
     }
 
