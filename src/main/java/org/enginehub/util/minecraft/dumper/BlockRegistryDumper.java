@@ -91,9 +91,6 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
             throw new RuntimeException(e);
         }
         Map<String, Object> map = new TreeMap<>();
-
-
-
         map.put("powerSource", bs.isSignalSource());
         map.put("lightValue", bs.getLightEmission());
         map.put("hardness", bs.getDestroySpeed(null, null));
