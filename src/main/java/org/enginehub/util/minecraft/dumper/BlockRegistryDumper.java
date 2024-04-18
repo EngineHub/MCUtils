@@ -91,11 +91,14 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
             throw new RuntimeException(e);
         }
         Map<String, Object> map = new TreeMap<>();
+
+
+
         map.put("powerSource", bs.isSignalSource());
         map.put("lightValue", bs.getLightEmission());
         map.put("hardness", bs.getDestroySpeed(null, null));
         map.put("resistance", b.getExplosionResistance());
-        map.put("ticksRandomly", b.isRandomlyTicking(bs));
+        map.put("ticksRandomly", bs.isRandomlyTicking());
         VoxelShape vs = bs.getCollisionShape(EmptyBlockGetter.INSTANCE, BlockPos.ZERO);
         map.put("fullCube", !vs.isEmpty() && isFullCube(vs.bounds()));
         map.put("slipperiness", b.getFriction());
