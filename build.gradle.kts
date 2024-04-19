@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    "minecraft"("com.mojang:minecraft:1.20.5-pre4")
+    "minecraft"("com.mojang:minecraft:1.20.5-rc1")
     "mappings"(project.the<LoomGradleExtensionAPI>().officialMojangMappings())
     "modImplementation"("net.fabricmc:fabric-loader:0.15.10")
 
