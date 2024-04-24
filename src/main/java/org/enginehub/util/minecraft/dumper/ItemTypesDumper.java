@@ -2,7 +2,6 @@ package org.enginehub.util.minecraft.dumper;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.Iterators;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 
@@ -34,7 +33,8 @@ public class ItemTypesDumper extends RegistryClassDumper {
             new ResourceLocation("sign"),
             new ResourceLocation("zombie_pigman_spawn_egg"),
             new ResourceLocation("grass_path"),
-            new ResourceLocation("grass")
+            new ResourceLocation("grass"),
+            new ResourceLocation("scute")
         );
     }
 
@@ -43,7 +43,10 @@ public class ItemTypesDumper extends RegistryClassDumper {
         return Iterators.forArray(
             new ResourceLocation("carpets"),
             new ResourceLocation("furnace_materials"),
-            new ResourceLocation("occludes_vibration_signals")
+            new ResourceLocation("occludes_vibration_signals"),
+            new ResourceLocation("tools"),
+            new ResourceLocation("overworld_natural_logs"),
+            new ResourceLocation("axolotl_tempt_items")
         );
     }
 }

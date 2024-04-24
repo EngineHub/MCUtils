@@ -48,6 +48,7 @@ public class BiomeTypesDumper extends RegistryClassDumper {
             new ResourceLocation("desert_lakes"),
             new ResourceLocation("giant_spruce_taiga_hills"),
             new ResourceLocation("giant_tree_taiga_hills"),
+            new ResourceLocation("modified_gravelly_hills"),
             new ResourceLocation("modified_gravelly_mountains"),
             new ResourceLocation("jungle_hills"),
             new ResourceLocation("modified_badlands_plateau"),

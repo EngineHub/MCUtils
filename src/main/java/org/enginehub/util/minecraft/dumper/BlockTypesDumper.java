@@ -2,7 +2,6 @@ package org.enginehub.util.minecraft.dumper;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.Iterators;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 
@@ -40,7 +39,9 @@ public class BlockTypesDumper extends RegistryClassDumper {
         return Iterators.forArray(
             new ResourceLocation("dirt_like"),
             new ResourceLocation("carpets"),
-            new ResourceLocation("lava_pool_stone_replaceables")
+            new ResourceLocation("lava_pool_stone_replaceables"),
+            new ResourceLocation("replaceable_plants"),
+            new ResourceLocation("non_flammable_wood")
         );
     }
 }
