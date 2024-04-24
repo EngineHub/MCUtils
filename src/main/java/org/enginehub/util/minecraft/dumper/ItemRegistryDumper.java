@@ -2,6 +2,7 @@ package org.enginehub.util.minecraft.dumper;
 
 import com.google.auto.service.AutoService;
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -56,8 +57,8 @@ public class ItemRegistryDumper extends RegistryDumper<Item> {
         map.put("id", resourceLocation.toString());
         map.put("unlocalizedName", item.getDescriptionId(item.getDefaultInstance()));
         map.put("localizedName", item.getName(item.getDefaultInstance()).getString());
-        map.put("maxDamage", item.getMaxDamage());
-        map.put("maxStackSize", item.getMaxStackSize());
+        map.put("maxDamage", item.components().get(DataComponents.MAX_DAMAGE));
+        map.put("maxStackSize", item.components().get(DataComponents.MAX_STACK_SIZE));
         return map;
     }
 }
