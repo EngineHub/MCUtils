@@ -27,26 +27,26 @@ public class ItemTypesDumper extends RegistryClassDumper {
     @Override
     protected Iterator<ResourceLocation> getDeprecatedIds() {
         return Iterators.forArray(
-            new ResourceLocation("cactus_green"),
-            new ResourceLocation("dandelion_yellow"),
-            new ResourceLocation("rose_red"),
-            new ResourceLocation("sign"),
-            new ResourceLocation("zombie_pigman_spawn_egg"),
-            new ResourceLocation("grass_path"),
-            new ResourceLocation("grass"),
-            new ResourceLocation("scute")
+            ResourceLocation.parse("cactus_green"),
+            ResourceLocation.parse("dandelion_yellow"),
+            ResourceLocation.parse("rose_red"),
+            ResourceLocation.parse("sign"),
+            ResourceLocation.parse("zombie_pigman_spawn_egg"),
+            ResourceLocation.parse("grass_path"),
+            ResourceLocation.parse("grass"),
+            ResourceLocation.parse("scute")
         );
     }
 
     @Override
     protected Iterator<ResourceLocation> getDeprecatedTags() {
         return Iterators.forArray(
-            new ResourceLocation("carpets"),
-            new ResourceLocation("furnace_materials"),
-            new ResourceLocation("occludes_vibration_signals"),
-            new ResourceLocation("tools"),
-            new ResourceLocation("overworld_natural_logs"),
-            new ResourceLocation("axolotl_tempt_items")
+            ResourceLocation.parse("carpets"),
+            ResourceLocation.parse("furnace_materials"),
+            ResourceLocation.parse("occludes_vibration_signals"),
+            ResourceLocation.parse("tools"),
+            ResourceLocation.parse("overworld_natural_logs"),
+            ResourceLocation.parse("axolotl_tempt_items")
         );
     }
 }

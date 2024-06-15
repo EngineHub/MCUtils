@@ -27,21 +27,21 @@ public class BlockTypesDumper extends RegistryClassDumper {
     @Override
     protected Iterator<ResourceLocation> getDeprecatedIds() {
         return Iterators.forArray(
-            new ResourceLocation("sign"),
-            new ResourceLocation("wall_sign"),
-            new ResourceLocation("grass_path"),
-            new ResourceLocation("grass")
+            ResourceLocation.parse("sign"),
+            ResourceLocation.parse("wall_sign"),
+            ResourceLocation.parse("grass_path"),
+            ResourceLocation.parse("grass")
         );
     }
 
     @Override
     protected Iterator<ResourceLocation> getDeprecatedTags() {
         return Iterators.forArray(
-            new ResourceLocation("dirt_like"),
-            new ResourceLocation("carpets"),
-            new ResourceLocation("lava_pool_stone_replaceables"),
-            new ResourceLocation("replaceable_plants"),
-            new ResourceLocation("non_flammable_wood")
+            ResourceLocation.parse("dirt_like"),
+            ResourceLocation.parse("carpets"),
+            ResourceLocation.parse("lava_pool_stone_replaceables"),
+            ResourceLocation.parse("replaceable_plants"),
+            ResourceLocation.parse("non_flammable_wood")
         );
     }
 }
