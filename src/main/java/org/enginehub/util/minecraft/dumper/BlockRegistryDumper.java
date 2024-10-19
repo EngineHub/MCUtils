@@ -64,7 +64,7 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
 
     @Override
     public Registry<Block> getRegistry() {
-        return GameSetupUtils.getServerRegistries().registryOrThrow(Registries.BLOCK);
+        return GameSetupUtils.getServerRegistries().lookupOrThrow(Registries.BLOCK);
     }
 
     @Override

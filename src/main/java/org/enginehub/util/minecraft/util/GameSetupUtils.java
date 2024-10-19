@@ -11,6 +11,7 @@ import net.minecraft.server.WorldStem;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.ServerPacksSource;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.DataPackConfig;
 import net.minecraft.world.level.GameRules;
@@ -27,13 +28,15 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public final class GameSetupUtils {
 
+    private static final FeatureFlagSet featureFlagSet =  FeatureFlags.DEFAULT_FLAGS;
+
     public static void setupGame() {
         SharedConstants.tryDetectVersion();
         Bootstrap.bootStrap();
     }
 
     private static final Lock lock = new ReentrantLock();
-    private static final GameRules GAME_RULES = Util.make(new GameRules(), gameRules -> {
+    private static final GameRules GAME_RULES = Util.make(new GameRules(featureFlagSet), gameRules -> {
         gameRules.getRule(GameRules.RULE_DOMOBSPAWNING).set(false, null);
         gameRules.getRule(GameRules.RULE_WEATHER_CYCLE).set(false, null);
     });
@@ -49,7 +52,7 @@ public final class GameSetupUtils {
             }
 
             PackRepository resourcePackManager = new PackRepository(new ServerPacksSource(new DirectoryValidator(path -> true)));
-            WorldDataConfiguration wdc = new WorldDataConfiguration(DataPackConfig.DEFAULT, FeatureFlags.DEFAULT_FLAGS);
+            WorldDataConfiguration wdc = new WorldDataConfiguration(DataPackConfig.DEFAULT, featureFlagSet);
             WorldLoader.PackConfig dataPacks = new WorldLoader.PackConfig(resourcePackManager, wdc, false, true);
             WorldLoader.InitConfig serverConfig = new WorldLoader.InitConfig(dataPacks, Commands.CommandSelection.DEDICATED, 4);
 
