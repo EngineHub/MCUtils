@@ -5,12 +5,12 @@ import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.SharedConstants;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.enginehub.util.minecraft.util.GameSetupUtils.getServerRegistries;
@@ -55,27 +56,29 @@ public class DataVersionDumper implements Dumper {
     private <T> Map<String, List<String>> getTags(Registry<T> registry) {
         Map<String, List<String>> tagCollector = new TreeMap<>();
 
-        registry.getTags().forEach(tagPair ->
-            tagCollector.put(tagPair.getFirst().location().toString(), tagPair.getSecond().stream()
+        registry.listTagIds().forEach(tagPair ->
+            tagCollector.put(tagPair.location().toString(), StreamSupport.stream(registry.getTagOrEmpty(tagPair).spliterator(), false)
                 .map(entry -> checkNotNull(registry.getKey(entry.value())))
                 .map(ResourceLocation::toString)
                 .sorted()
-                .collect(Collectors.toList()))
+                .toList())
         );
 
         return tagCollector;
     }
 
     @SuppressWarnings("rawtypes")
-    private String getTypeName(Class<? extends Property> clazz) {
+    private String getTypeName(Property<?> property) {
+        Class<? extends Property> clazz = property.getClass();
         if (clazz == EnumProperty.class) {
+            if (property.getValueClass() == Direction.class) {
+                return "direction";
+            }
             return "enum";
         } else if (clazz == IntegerProperty.class) {
             return "int";
         } else if (clazz == BooleanProperty.class) {
             return "bool";
-        } else if (clazz == DirectionProperty.class) {
-            return "direction";
         } else {
             throw new RuntimeException("Unknown property!");
         }
@@ -85,14 +88,14 @@ public class DataVersionDumper implements Dumper {
     public void run() {
         // Blocks
         Map<String, Map<String, Object>> blocks = new TreeMap<>();
-        for (ResourceLocation blockId : getServerRegistries().registryOrThrow(Registries.BLOCK).keySet()) {
+        for (ResourceLocation blockId : getServerRegistries().lookupOrThrow(Registries.BLOCK).keySet()) {
             Map<String, Object> bl = new TreeMap<>();
-            Block block = getServerRegistries().registryOrThrow(Registries.BLOCK).get(blockId);
+            Block block = getServerRegistries().lookupOrThrow(Registries.BLOCK).get(blockId).get().value();
             Map<String, Object> properties = new TreeMap<>();
             for (Property<?> prop : block.defaultBlockState().getProperties()) {
                 Map<String, Object> propertyValues = new TreeMap<>();
                 propertyValues.put("values", prop.getPossibleValues().stream().map(s -> s.toString().toLowerCase()).collect(Collectors.toList()));
-                propertyValues.put("type", getTypeName(prop.getClass()));
+                propertyValues.put("type", getTypeName(prop));
                 properties.put(prop.getName(), propertyValues);
             }
             bl.put("properties", properties);
@@ -112,22 +115,22 @@ public class DataVersionDumper implements Dumper {
         }
 
         // Items
-        List<String> items = getServerRegistries().registryOrThrow(Registries.ITEM).keySet().stream().sorted().map(ResourceLocation::toString).collect(Collectors.toList());
+        List<String> items = getServerRegistries().lookupOrThrow(Registries.ITEM).keySet().stream().sorted().map(ResourceLocation::toString).collect(Collectors.toList());
 
         // Entities
-        List<String> entities = getServerRegistries().registryOrThrow(Registries.ENTITY_TYPE).keySet().stream().sorted().map(ResourceLocation::toString).collect(Collectors.toList());
+        List<String> entities = getServerRegistries().lookupOrThrow(Registries.ENTITY_TYPE).keySet().stream().sorted().map(ResourceLocation::toString).collect(Collectors.toList());
 
         // Biomes
-        List<String> biomes = getServerRegistries().registryOrThrow(Registries.BIOME).keySet().stream().sorted().map(ResourceLocation::toString).collect(Collectors.toList());
+        List<String> biomes = getServerRegistries().lookupOrThrow(Registries.BIOME).keySet().stream().sorted().map(ResourceLocation::toString).collect(Collectors.toList());
 
         // BlockTags
-        Map<String, List<String>> blockTags = getTags(getServerRegistries().registryOrThrow(Registries.BLOCK));
+        Map<String, List<String>> blockTags = getTags(getServerRegistries().lookupOrThrow(Registries.BLOCK));
 
         // ItemTags
-        Map<String, List<String>> itemTags = getTags(getServerRegistries().registryOrThrow(Registries.ITEM));
+        Map<String, List<String>> itemTags = getTags(getServerRegistries().lookupOrThrow(Registries.ITEM));
 
         // EntityTags
-        Map<String, List<String>> entityTags = getTags(getServerRegistries().registryOrThrow(Registries.ENTITY_TYPE));
+        Map<String, List<String>> entityTags = getTags(getServerRegistries().lookupOrThrow(Registries.ENTITY_TYPE));
 
         Map<String, Object> output = new TreeMap<>();
         output.put("blocks", blocks);

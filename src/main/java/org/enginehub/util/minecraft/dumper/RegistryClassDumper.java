@@ -162,10 +162,10 @@ public abstract class RegistryClassDumper implements Dumper {
 
     @Override
     public void run() {
-        var registry = GameSetupUtils.getServerRegistries().registryOrThrow(key);
+        var registry = GameSetupUtils.getServerRegistries().lookupOrThrow(key);
 
         idDumper.generate(registry.keySet().iterator(), getDeprecatedIds());
-        tagDumper.generate(registry.getTagNames().map(TagKey::location).iterator(), getDeprecatedTags());
+        tagDumper.generate(registry.listTagIds().map(TagKey::location).iterator(), getDeprecatedTags());
     }
 
 }
