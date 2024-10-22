@@ -36,7 +36,7 @@ abstract class RegistryDumper<V> implements Dumper {
         ImmutableList<Map<String, Object>> list = ImmutableList.sortedCopyOf(
             getComparator(),
             getRegistry().keySet().stream()
-                .flatMap(v -> getProperties(v, registry.get(v)).stream())
+                .flatMap(v -> getProperties(v, registry.getValue(v)).stream())
                 .collect(Collectors.toList())
         );
 

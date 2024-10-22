@@ -5,6 +5,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.Util;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.gametest.framework.GameTestServer;
 import net.minecraft.server.Bootstrap;
 import net.minecraft.server.WorldLoader;
 import net.minecraft.server.WorldStem;
@@ -33,10 +34,7 @@ public final class GameSetupUtils {
     }
 
     private static final Lock lock = new ReentrantLock();
-    private static final GameRules GAME_RULES = Util.make(new GameRules(), gameRules -> {
-        gameRules.getRule(GameRules.RULE_DOMOBSPAWNING).set(false, null);
-        gameRules.getRule(GameRules.RULE_WEATHER_CYCLE).set(false, null);
-    });
+    private static final GameRules GAME_RULES = GameTestServer.TEST_GAME_RULES;
     private static RegistryAccess SERVER_REGISTRY_MANAGER;
 
     public static RegistryAccess getServerRegistries() {

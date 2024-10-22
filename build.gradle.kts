@@ -12,8 +12,12 @@ repositories {
     mavenCentral()
 }
 
+loom {
+    accessWidenerPath.set(project.file("src/main/resources/mcutils.accesswidener"))
+}
+
 dependencies {
-    "minecraft"("com.mojang:minecraft:1.21.1")
+    "minecraft"("com.mojang:minecraft:1.21.2")
     "mappings"(project.the<LoomGradleExtensionAPI>().officialMojangMappings())
     "modImplementation"("net.fabricmc:fabric-loader:0.16.7")
 

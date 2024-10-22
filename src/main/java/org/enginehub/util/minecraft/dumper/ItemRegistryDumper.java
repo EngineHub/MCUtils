@@ -38,7 +38,7 @@ public class ItemRegistryDumper extends RegistryDumper<Item> {
 
     @Override
     public Registry<Item> getRegistry() {
-        return GameSetupUtils.getServerRegistries().registryOrThrow(Registries.ITEM);
+        return GameSetupUtils.getServerRegistries().lookupOrThrow(Registries.ITEM);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class ItemRegistryDumper extends RegistryDumper<Item> {
     private Map<String, Object> getPropertiesForItem(ResourceLocation resourceLocation, Item item) {
         Map<String, Object> map = new TreeMap<>();
         map.put("id", resourceLocation.toString());
-        map.put("unlocalizedName", item.getDescriptionId(item.getDefaultInstance()));
+        map.put("unlocalizedName", item.getDescriptionId());
         map.put("localizedName", item.getName(item.getDefaultInstance()).getString());
         map.put("maxDamage", item.components().get(DataComponents.MAX_DAMAGE));
         map.put("maxStackSize", item.components().get(DataComponents.MAX_STACK_SIZE));

@@ -28,7 +28,9 @@ public class EntityTypesDumper extends RegistryClassDumper {
     @Override
     protected Iterator<ResourceLocation> getDeprecatedIds() {
         return Iterators.forArray(
-            ResourceLocation.parse("zombie_pigman")
+            ResourceLocation.parse("zombie_pigman"),
+            ResourceLocation.parse("boat"),
+            ResourceLocation.parse("chest_boat")
         );
     }
 }
