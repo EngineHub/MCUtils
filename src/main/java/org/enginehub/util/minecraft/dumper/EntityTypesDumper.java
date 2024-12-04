@@ -30,7 +30,8 @@ public class EntityTypesDumper extends RegistryClassDumper {
         return Iterators.forArray(
             ResourceLocation.parse("zombie_pigman"),
             ResourceLocation.parse("boat"),
-            ResourceLocation.parse("chest_boat")
+            ResourceLocation.parse("chest_boat"),
+            ResourceLocation.parse("creaking_transient")
         );
     }
 }
