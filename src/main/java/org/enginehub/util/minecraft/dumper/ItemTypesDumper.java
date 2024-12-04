@@ -47,7 +47,10 @@ public class ItemTypesDumper extends RegistryClassDumper {
             ResourceLocation.parse("tools"),
             ResourceLocation.parse("overworld_natural_logs"),
             ResourceLocation.parse("axolotl_tempt_items"),
-            ResourceLocation.parse("music_discs")
+            ResourceLocation.parse("music_discs"),
+            ResourceLocation.parse("trim_templates"),
+            ResourceLocation.parse("tall_flowers"),
+            ResourceLocation.parse("flowers")
         );
     }
 }
