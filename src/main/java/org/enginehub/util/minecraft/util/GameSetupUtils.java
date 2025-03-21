@@ -34,7 +34,7 @@ public final class GameSetupUtils {
     }
 
     private static final Lock lock = new ReentrantLock();
-    private static final GameRules GAME_RULES = GameTestServer.TEST_GAME_RULES;
+    private static final GameRules GAME_RULES = GameTestServer.DEMO_SETTINGS.gameRules();
     private static RegistryAccess SERVER_REGISTRY_MANAGER;
 
     public static RegistryAccess getServerRegistries() {

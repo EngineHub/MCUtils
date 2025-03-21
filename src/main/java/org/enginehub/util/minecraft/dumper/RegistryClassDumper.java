@@ -14,11 +14,11 @@ import com.squareup.javapoet.TypeSpec;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import org.enginehub.util.minecraft.util.GameSetupUtils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Iterator;
@@ -101,6 +101,9 @@ public abstract class RegistryClassDumper implements Dumper {
                 .build();
 
             try {
+                if (!Files.exists(OUTPUT_DIRECTORY)) {
+                    Files.createDirectory(OUTPUT_DIRECTORY);
+                }
                 Path outputFile = OUTPUT_DIRECTORY.resolve(spec.name + ".java");
                 String content = fixContent(javaFile.toString());
                 MoreFiles.asCharSink(outputFile, StandardCharsets.UTF_8).write(content);

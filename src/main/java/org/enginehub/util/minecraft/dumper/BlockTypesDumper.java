@@ -42,7 +42,8 @@ public class BlockTypesDumper extends RegistryClassDumper {
             ResourceLocation.parse("lava_pool_stone_replaceables"),
             ResourceLocation.parse("replaceable_plants"),
             ResourceLocation.parse("non_flammable_wood"),
-            ResourceLocation.parse("tall_flowers")
+            ResourceLocation.parse("tall_flowers"),
+            ResourceLocation.parse("dead_bush_may_place_on")
         );
     }
 }
