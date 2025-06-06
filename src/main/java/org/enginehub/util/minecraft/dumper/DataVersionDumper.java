@@ -23,7 +23,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.enginehub.util.minecraft.util.GameSetupUtils.getServerRegistries;
@@ -40,7 +39,7 @@ public class DataVersionDumper implements Dumper {
     public static class Default implements Dumper {
         @Override
         public void run() {
-            File file = new File("output/" + SharedConstants.getCurrentVersion().getDataVersion().getVersion() + ".json");
+            File file = new File("output/" + SharedConstants.getCurrentVersion().dataVersion().version() + ".json");
             new DataVersionDumper(file).run();
         }
     }
@@ -60,7 +59,7 @@ public class DataVersionDumper implements Dumper {
                 .map(entry -> checkNotNull(registry.getKey(entry.value())))
                 .map(ResourceLocation::toString)
                 .sorted()
-                .collect(Collectors.toList()))
+                .toList())
         );
 
         return tagCollector;
@@ -92,7 +91,7 @@ public class DataVersionDumper implements Dumper {
             Map<String, Object> properties = new TreeMap<>();
             for (Property<?> prop : block.defaultBlockState().getProperties()) {
                 Map<String, Object> propertyValues = new TreeMap<>();
-                propertyValues.put("values", prop.getPossibleValues().stream().map(s -> s.toString().toLowerCase()).collect(Collectors.toList()));
+                propertyValues.put("values", prop.getPossibleValues().stream().map(s -> s.toString().toLowerCase()).toList());
                 propertyValues.put("type", getTypeName(prop));
                 properties.put(prop.getName(), propertyValues);
             }
@@ -113,13 +112,13 @@ public class DataVersionDumper implements Dumper {
         }
 
         // Items
-        List<String> items = getServerRegistries().lookupOrThrow(Registries.ITEM).keySet().stream().sorted().map(ResourceLocation::toString).collect(Collectors.toList());
+        List<String> items = getServerRegistries().lookupOrThrow(Registries.ITEM).keySet().stream().sorted().map(ResourceLocation::toString).toList();
 
         // Entities
-        List<String> entities = getServerRegistries().lookupOrThrow(Registries.ENTITY_TYPE).keySet().stream().sorted().map(ResourceLocation::toString).collect(Collectors.toList());
+        List<String> entities = getServerRegistries().lookupOrThrow(Registries.ENTITY_TYPE).keySet().stream().sorted().map(ResourceLocation::toString).toList();
 
         // Biomes
-        List<String> biomes = getServerRegistries().lookupOrThrow(Registries.BIOME).keySet().stream().sorted().map(ResourceLocation::toString).collect(Collectors.toList());
+        List<String> biomes = getServerRegistries().lookupOrThrow(Registries.BIOME).keySet().stream().sorted().map(ResourceLocation::toString).toList();
 
         // BlockTags
         Map<String, List<String>> blockTags = getTags(getServerRegistries().lookupOrThrow(Registries.BLOCK));
