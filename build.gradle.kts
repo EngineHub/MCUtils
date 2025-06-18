@@ -17,9 +17,9 @@ loom {
 }
 
 dependencies {
-    "minecraft"("com.mojang:minecraft:1.21.5")
+    "minecraft"("com.mojang:minecraft:1.21.6")
     "mappings"(project.the<LoomGradleExtensionAPI>().officialMojangMappings())
-    "modImplementation"("net.fabricmc:fabric-loader:0.16.9")
+    "modImplementation"("net.fabricmc:fabric-loader:0.16.14")
 
     "implementation"("com.squareup:javapoet:1.13.0")
 
