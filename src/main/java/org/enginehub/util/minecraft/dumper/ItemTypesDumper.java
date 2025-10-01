@@ -34,7 +34,8 @@ public class ItemTypesDumper extends RegistryClassDumper {
             ResourceLocation.parse("zombie_pigman_spawn_egg"),
             ResourceLocation.parse("grass_path"),
             ResourceLocation.parse("grass"),
-            ResourceLocation.parse("scute")
+            ResourceLocation.parse("scute"),
+            ResourceLocation.parse("chain")
         );
     }
 

@@ -30,7 +30,8 @@ public class BlockTypesDumper extends RegistryClassDumper {
             ResourceLocation.parse("sign"),
             ResourceLocation.parse("wall_sign"),
             ResourceLocation.parse("grass_path"),
-            ResourceLocation.parse("grass")
+            ResourceLocation.parse("grass"),
+            ResourceLocation.parse("chain")
         );
     }
 
