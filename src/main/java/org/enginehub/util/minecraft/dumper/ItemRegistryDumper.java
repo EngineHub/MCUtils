@@ -4,7 +4,7 @@ import com.google.auto.service.AutoService;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import org.enginehub.util.minecraft.util.GameSetupUtils;
 
@@ -46,13 +46,13 @@ public class ItemRegistryDumper extends RegistryDumper<Item> {
         return Comparator.comparing(map -> (String) map.get("id"));
     }
 
-    public List<Map<String, Object>> getProperties(ResourceLocation resourceLocation, Item item) {
+    public List<Map<String, Object>> getProperties(Identifier resourceLocation, Item item) {
         List<Map<String, Object>> maps = new ArrayList<>();
         maps.add(getPropertiesForItem(resourceLocation, item));
         return maps;
     }
 
-    private Map<String, Object> getPropertiesForItem(ResourceLocation resourceLocation, Item item) {
+    private Map<String, Object> getPropertiesForItem(Identifier resourceLocation, Item item) {
         Map<String, Object> map = new TreeMap<>();
         map.put("id", resourceLocation.toString());
         map.put("unlocalizedName", item.getDescriptionId());

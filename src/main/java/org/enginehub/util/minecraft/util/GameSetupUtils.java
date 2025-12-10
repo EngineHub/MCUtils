@@ -2,7 +2,6 @@ package org.enginehub.util.minecraft.util;
 
 import com.mojang.serialization.Lifecycle;
 import net.minecraft.SharedConstants;
-import net.minecraft.Util;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.gametest.framework.GameTestServer;
@@ -11,10 +10,11 @@ import net.minecraft.server.WorldLoader;
 import net.minecraft.server.WorldStem;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.ServerPacksSource;
+import net.minecraft.server.permissions.PermissionSet;
+import net.minecraft.util.Util;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.DataPackConfig;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.LevelSettings;
 import net.minecraft.world.level.WorldDataConfiguration;
@@ -34,7 +34,6 @@ public final class GameSetupUtils {
     }
 
     private static final Lock lock = new ReentrantLock();
-    private static final GameRules GAME_RULES = GameTestServer.DEMO_SETTINGS.gameRules();
     private static RegistryAccess SERVER_REGISTRY_MANAGER;
 
     public static RegistryAccess getServerRegistries() {
@@ -49,10 +48,10 @@ public final class GameSetupUtils {
             PackRepository resourcePackManager = new PackRepository(new ServerPacksSource(new DirectoryValidator(path -> true)));
             WorldDataConfiguration wdc = new WorldDataConfiguration(DataPackConfig.DEFAULT, FeatureFlags.DEFAULT_FLAGS);
             WorldLoader.PackConfig dataPacks = new WorldLoader.PackConfig(resourcePackManager, wdc, false, true);
-            WorldLoader.InitConfig serverConfig = new WorldLoader.InitConfig(dataPacks, Commands.CommandSelection.DEDICATED, 4);
+            WorldLoader.InitConfig serverConfig = new WorldLoader.InitConfig(dataPacks, Commands.CommandSelection.DEDICATED, PermissionSet.ALL_PERMISSIONS);
 
             WorldStem saveLoader = Util.blockUntilDone(executor -> WorldLoader.load(serverConfig, (dataLoadContext) -> {
-                LevelSettings dataGenLevel = new LevelSettings("Data Gen Level", GameType.CREATIVE, false, Difficulty.NORMAL, true, GAME_RULES, dataLoadContext.dataConfiguration());
+                LevelSettings dataGenLevel = new LevelSettings("Data Gen Level", GameType.CREATIVE, false, Difficulty.NORMAL, true, GameTestServer.DEMO_SETTINGS.gameRules(), dataLoadContext.dataConfiguration());
                 RegistryAccess.Frozen immutable = dataLoadContext.datapackDimensions().freeze();
 
                 PrimaryLevelData saveProperties = new PrimaryLevelData(dataGenLevel, WorldOptions.DEMO_OPTIONS, PrimaryLevelData.SpecialWorldProperty.FLAT, Lifecycle.stable());

@@ -12,8 +12,8 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import org.enginehub.util.minecraft.util.GameSetupUtils;
 
 import java.io.IOException;
@@ -57,10 +57,10 @@ public abstract class RegistryClassDumper implements Dumper {
     }
 
     protected record DumperInfo(ClassName type, boolean nullable) {
-        private void generate(Iterator<ResourceLocation> ids, Iterator<ResourceLocation> deprecatedIdsIter) {
-            Set<ResourceLocation> deprecatedIds = ImmutableSortedSet.copyOf(deprecatedIdsIter);
-            Set<ResourceLocation> resources = ImmutableSortedSet
-                .<ResourceLocation>naturalOrder()
+        private void generate(Iterator<Identifier> ids, Iterator<Identifier> deprecatedIdsIter) {
+            Set<Identifier> deprecatedIds = ImmutableSortedSet.copyOf(deprecatedIdsIter);
+            Set<Identifier> resources = ImmutableSortedSet
+                .<Identifier>naturalOrder()
                 .addAll(ids)
                 .addAll(deprecatedIds)
                 .build();
@@ -78,7 +78,7 @@ public abstract class RegistryClassDumper implements Dumper {
                 .addModifiers(PRIVATE)
                 .build());
             builder.addMethod(createGetMethod());
-            for (ResourceLocation resourceLocation : resources) {
+            for (Identifier resourceLocation : resources) {
                 String name = resourceLocation.getPath().toUpperCase().replace('/', '_');
                 FieldSpec.Builder fieldBuilder = FieldSpec.builder(
                     type,
@@ -155,11 +155,11 @@ public abstract class RegistryClassDumper implements Dumper {
         this.tagDumper = new DumperInfo(ClassName.get(packageName, baseName + "Category"), false);
     }
 
-    protected Iterator<ResourceLocation> getDeprecatedIds() {
+    protected Iterator<Identifier> getDeprecatedIds() {
         return Iterators.forArray();
     }
 
-    protected Iterator<ResourceLocation> getDeprecatedTags() {
+    protected Iterator<Identifier> getDeprecatedTags() {
         return Iterators.forArray();
     }
 

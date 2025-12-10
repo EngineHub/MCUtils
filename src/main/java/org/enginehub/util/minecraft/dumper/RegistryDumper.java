@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -61,7 +61,7 @@ abstract class RegistryDumper<V> implements Dumper {
         return String.format("#%02x%02x%02x", r, g, b);
     }
 
-    public abstract List<Map<String, Object>> getProperties(ResourceLocation resourceLocation, V object);
+    public abstract List<Map<String, Object>> getProperties(Identifier resourceLocation, V object);
 
     public abstract Registry<V> getRegistry();
 

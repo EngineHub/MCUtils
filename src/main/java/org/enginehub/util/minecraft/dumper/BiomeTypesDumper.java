@@ -3,7 +3,7 @@ package org.enginehub.util.minecraft.dumper;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.Iterators;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Iterator;
 
@@ -25,47 +25,58 @@ public class BiomeTypesDumper extends RegistryClassDumper {
     }
 
     @Override
-    protected Iterator<ResourceLocation> getDeprecatedIds() {
+    protected Iterator<Identifier> getDeprecatedIds() {
         return Iterators.forArray(
-            ResourceLocation.parse("nether"),
-            ResourceLocation.parse("tall_birch_forest"),
-            ResourceLocation.parse("giant_tree_taiga"),
-            ResourceLocation.parse("giant_spruce_taiga"),
-            ResourceLocation.parse("snowy_tundra"),
-            ResourceLocation.parse("jungle_edge"),
-            ResourceLocation.parse("stone_shore"),
-            ResourceLocation.parse("mountains"),
-            ResourceLocation.parse("wooded_mountains"),
-            ResourceLocation.parse("gravelly_mountains"),
-            ResourceLocation.parse("shattered_savanna"),
-            ResourceLocation.parse("wooded_badlands_plateau"),
-            ResourceLocation.parse("badlands_plateau"),
-            ResourceLocation.parse("bamboo_jungle_hills"),
-            ResourceLocation.parse("birch_forest_hills"),
-            ResourceLocation.parse("dark_forest_hills"),
-            ResourceLocation.parse("deep_warm_ocean"),
-            ResourceLocation.parse("desert_hills"),
-            ResourceLocation.parse("desert_lakes"),
-            ResourceLocation.parse("giant_spruce_taiga_hills"),
-            ResourceLocation.parse("giant_tree_taiga_hills"),
-            ResourceLocation.parse("modified_gravelly_hills"),
-            ResourceLocation.parse("modified_gravelly_mountains"),
-            ResourceLocation.parse("jungle_hills"),
-            ResourceLocation.parse("modified_badlands_plateau"),
-            ResourceLocation.parse("modified_jungle"),
-            ResourceLocation.parse("modified_jungle_edge"),
-            ResourceLocation.parse("modified_wooded_badlands_plateau"),
-            ResourceLocation.parse("mountain_edge"),
-            ResourceLocation.parse("mushroom_field_shore"),
-            ResourceLocation.parse("shattered_savanna_plateau"),
-            ResourceLocation.parse("snowy_mountains"),
-            ResourceLocation.parse("snowy_taiga_hills"),
-            ResourceLocation.parse("snowy_taiga_mountains"),
-            ResourceLocation.parse("swamp_hills"),
-            ResourceLocation.parse("taiga_hills"),
-            ResourceLocation.parse("taiga_mountains"),
-            ResourceLocation.parse("tall_birch_hills"),
-            ResourceLocation.parse("wooded_hills")
+            Identifier.parse("nether"),
+            Identifier.parse("tall_birch_forest"),
+            Identifier.parse("giant_tree_taiga"),
+            Identifier.parse("giant_spruce_taiga"),
+            Identifier.parse("snowy_tundra"),
+            Identifier.parse("jungle_edge"),
+            Identifier.parse("stone_shore"),
+            Identifier.parse("mountains"),
+            Identifier.parse("wooded_mountains"),
+            Identifier.parse("gravelly_mountains"),
+            Identifier.parse("shattered_savanna"),
+            Identifier.parse("wooded_badlands_plateau"),
+            Identifier.parse("badlands_plateau"),
+            Identifier.parse("bamboo_jungle_hills"),
+            Identifier.parse("birch_forest_hills"),
+            Identifier.parse("dark_forest_hills"),
+            Identifier.parse("deep_warm_ocean"),
+            Identifier.parse("desert_hills"),
+            Identifier.parse("desert_lakes"),
+            Identifier.parse("giant_spruce_taiga_hills"),
+            Identifier.parse("giant_tree_taiga_hills"),
+            Identifier.parse("modified_gravelly_hills"),
+            Identifier.parse("modified_gravelly_mountains"),
+            Identifier.parse("jungle_hills"),
+            Identifier.parse("modified_badlands_plateau"),
+            Identifier.parse("modified_jungle"),
+            Identifier.parse("modified_jungle_edge"),
+            Identifier.parse("modified_wooded_badlands_plateau"),
+            Identifier.parse("mountain_edge"),
+            Identifier.parse("mushroom_field_shore"),
+            Identifier.parse("shattered_savanna_plateau"),
+            Identifier.parse("snowy_mountains"),
+            Identifier.parse("snowy_taiga_hills"),
+            Identifier.parse("snowy_taiga_mountains"),
+            Identifier.parse("swamp_hills"),
+            Identifier.parse("taiga_hills"),
+            Identifier.parse("taiga_mountains"),
+            Identifier.parse("tall_birch_hills"),
+            Identifier.parse("wooded_hills")
+        );
+    }
+
+    @Override
+    protected Iterator<Identifier> getDeprecatedTags() {
+        return Iterators.forArray(
+            Identifier.parse("has_closer_water_fog"),
+            Identifier.parse("increased_fire_burnout"),
+            Identifier.parse("plays_underwater_music"),
+            Identifier.parse("snow_golem_melts"),
+            Identifier.parse("without_patrol_spawns")
         );
     }
 }

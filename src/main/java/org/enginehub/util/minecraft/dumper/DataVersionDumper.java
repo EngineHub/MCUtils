@@ -8,7 +8,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -57,7 +57,7 @@ public class DataVersionDumper implements Dumper {
         registry.getTags().forEach(tag ->
             tagCollector.put(tag.key().location().toString(), tag.stream()
                 .map(entry -> checkNotNull(registry.getKey(entry.value())))
-                .map(ResourceLocation::toString)
+                .map(Identifier::toString)
                 .sorted()
                 .toList())
         );
@@ -85,7 +85,7 @@ public class DataVersionDumper implements Dumper {
     public void run() {
         // Blocks
         Map<String, Map<String, Object>> blocks = new TreeMap<>();
-        for (ResourceLocation blockId : getServerRegistries().lookupOrThrow(Registries.BLOCK).keySet()) {
+        for (Identifier blockId : getServerRegistries().lookupOrThrow(Registries.BLOCK).keySet()) {
             Map<String, Object> bl = new TreeMap<>();
             Block block = getServerRegistries().lookupOrThrow(Registries.BLOCK).getValue(blockId);
             Map<String, Object> properties = new TreeMap<>();
@@ -112,13 +112,13 @@ public class DataVersionDumper implements Dumper {
         }
 
         // Items
-        List<String> items = getServerRegistries().lookupOrThrow(Registries.ITEM).keySet().stream().sorted().map(ResourceLocation::toString).toList();
+        List<String> items = getServerRegistries().lookupOrThrow(Registries.ITEM).keySet().stream().sorted().map(Identifier::toString).toList();
 
         // Entities
-        List<String> entities = getServerRegistries().lookupOrThrow(Registries.ENTITY_TYPE).keySet().stream().sorted().map(ResourceLocation::toString).toList();
+        List<String> entities = getServerRegistries().lookupOrThrow(Registries.ENTITY_TYPE).keySet().stream().sorted().map(Identifier::toString).toList();
 
         // Biomes
-        List<String> biomes = getServerRegistries().lookupOrThrow(Registries.BIOME).keySet().stream().sorted().map(ResourceLocation::toString).toList();
+        List<String> biomes = getServerRegistries().lookupOrThrow(Registries.BIOME).keySet().stream().sorted().map(Identifier::toString).toList();
 
         // BlockTags
         Map<String, List<String>> blockTags = getTags(getServerRegistries().lookupOrThrow(Registries.BLOCK));

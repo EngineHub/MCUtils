@@ -11,7 +11,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.locale.Language;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.level.EmptyBlockGetter;
 import net.minecraft.world.level.block.Block;
@@ -73,7 +73,7 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
     }
 
     @Override
-    public List<Map<String, Object>> getProperties(ResourceLocation resourceLocation, Block block) {
+    public List<Map<String, Object>> getProperties(Identifier resourceLocation, Block block) {
         Map<String, Object> map = new TreeMap<>();
         map.put("id", resourceLocation.toString());
         map.put("localizedName", Language.getInstance().getOrDefault(block.getDescriptionId()));

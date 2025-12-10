@@ -2,9 +2,8 @@ package org.enginehub.util.minecraft.dumper;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.Iterators;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Iterator;
 
@@ -26,13 +25,13 @@ public class EntityTypesDumper extends RegistryClassDumper {
     }
 
     @Override
-    protected Iterator<ResourceLocation> getDeprecatedIds() {
+    protected Iterator<Identifier> getDeprecatedIds() {
         return Iterators.forArray(
-            ResourceLocation.parse("zombie_pigman"),
-            ResourceLocation.parse("boat"),
-            ResourceLocation.parse("chest_boat"),
-            ResourceLocation.parse("creaking_transient"),
-            ResourceLocation.parse("potion")
+            Identifier.parse("zombie_pigman"),
+            Identifier.parse("boat"),
+            Identifier.parse("chest_boat"),
+            Identifier.parse("creaking_transient"),
+            Identifier.parse("potion")
         );
     }
 }

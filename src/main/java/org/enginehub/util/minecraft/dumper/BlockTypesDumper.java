@@ -3,7 +3,7 @@ package org.enginehub.util.minecraft.dumper;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.Iterators;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Iterator;
 
@@ -25,27 +25,27 @@ public class BlockTypesDumper extends RegistryClassDumper {
     }
 
     @Override
-    protected Iterator<ResourceLocation> getDeprecatedIds() {
+    protected Iterator<Identifier> getDeprecatedIds() {
         return Iterators.forArray(
-            ResourceLocation.parse("sign"),
-            ResourceLocation.parse("wall_sign"),
-            ResourceLocation.parse("grass_path"),
-            ResourceLocation.parse("grass"),
-            ResourceLocation.parse("chain")
+            Identifier.parse("sign"),
+            Identifier.parse("wall_sign"),
+            Identifier.parse("grass_path"),
+            Identifier.parse("grass"),
+            Identifier.parse("chain")
         );
     }
 
     @Override
-    protected Iterator<ResourceLocation> getDeprecatedTags() {
+    protected Iterator<Identifier> getDeprecatedTags() {
         return Iterators.forArray(
-            ResourceLocation.parse("dirt_like"),
-            ResourceLocation.parse("carpets"),
-            ResourceLocation.parse("lava_pool_stone_replaceables"),
-            ResourceLocation.parse("replaceable_plants"),
-            ResourceLocation.parse("non_flammable_wood"),
-            ResourceLocation.parse("tall_flowers"),
-            ResourceLocation.parse("dead_bush_may_place_on"),
-            ResourceLocation.parse("plays_ambient_desert_block_sounds")
+            Identifier.parse("dirt_like"),
+            Identifier.parse("carpets"),
+            Identifier.parse("lava_pool_stone_replaceables"),
+            Identifier.parse("replaceable_plants"),
+            Identifier.parse("non_flammable_wood"),
+            Identifier.parse("tall_flowers"),
+            Identifier.parse("dead_bush_may_place_on"),
+            Identifier.parse("plays_ambient_desert_block_sounds")
         );
     }
 }
