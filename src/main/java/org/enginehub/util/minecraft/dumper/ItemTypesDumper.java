@@ -52,7 +52,8 @@ public class ItemTypesDumper extends RegistryClassDumper {
             Identifier.parse("trim_templates"),
             Identifier.parse("tall_flowers"),
             Identifier.parse("flowers"),
-            Identifier.parse("enchantable/sword")
+            Identifier.parse("enchantable/sword"),
+            Identifier.parse("dyeable")
         );
     }
 }

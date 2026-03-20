@@ -45,7 +45,14 @@ public class BlockTypesDumper extends RegistryClassDumper {
             Identifier.parse("non_flammable_wood"),
             Identifier.parse("tall_flowers"),
             Identifier.parse("dead_bush_may_place_on"),
-            Identifier.parse("plays_ambient_desert_block_sounds")
+            Identifier.parse("plays_ambient_desert_block_sounds"),
+            Identifier.parse("snow_layer_can_survive_on"),
+            Identifier.parse("snow_layer_cannot_survive_on"),
+            Identifier.parse("small_dripleaf_placeable"),
+            Identifier.parse("mushroom_grow_block"),
+            Identifier.parse("dry_vegetation_may_place_on"),
+            Identifier.parse("big_dripleaf_placeable"),
+            Identifier.parse("bamboo_plantable_on")
         );
     }
 }
