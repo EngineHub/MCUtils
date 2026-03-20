@@ -12,7 +12,7 @@ import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 @AutoService(Dumper.class)
 public class ItemTypesDumper extends RegistryClassDumper {
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         setupGame();
         new ItemTypesDumper().run();
     }

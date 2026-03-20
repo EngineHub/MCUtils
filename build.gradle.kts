@@ -1,7 +1,5 @@
-import net.fabricmc.loom.api.LoomGradleExtensionAPI
-
 plugins {
-    id("fabric-loom") version "1.14-SNAPSHOT"
+    id("net.fabricmc.fabric-loom") version "1.15-SNAPSHOT"
 }
 
 repositories {
@@ -17,9 +15,8 @@ loom {
 }
 
 dependencies {
-    "minecraft"("com.mojang:minecraft:1.21.11")
-    "mappings"(project.the<LoomGradleExtensionAPI>().officialMojangMappings())
-    "modImplementation"("net.fabricmc:fabric-loader:0.18.2")
+    "minecraft"("com.mojang:minecraft:26.1-rc-1")
+    "implementation"("net.fabricmc:fabric-loader:0.18.4")
 
     "implementation"("com.squareup:javapoet:1.13.0")
 
@@ -30,6 +27,6 @@ dependencies {
 
 plugins.withId("java") {
     the<JavaPluginExtension>().toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
+        languageVersion.set(JavaLanguageVersion.of(25))
     }
 }

@@ -4,7 +4,6 @@ import com.mojang.serialization.Lifecycle;
 import net.minecraft.SharedConstants;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.gametest.framework.GameTestServer;
 import net.minecraft.server.Bootstrap;
 import net.minecraft.server.WorldLoader;
 import net.minecraft.server.WorldStem;
@@ -12,13 +11,11 @@ import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.ServerPacksSource;
 import net.minecraft.server.permissions.PermissionSet;
 import net.minecraft.util.Util;
-import net.minecraft.world.Difficulty;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.DataPackConfig;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.LevelSettings;
 import net.minecraft.world.level.WorldDataConfiguration;
-import net.minecraft.world.level.levelgen.WorldOptions;
 import net.minecraft.world.level.storage.PrimaryLevelData;
 import net.minecraft.world.level.validation.DirectoryValidator;
 
@@ -51,12 +48,13 @@ public final class GameSetupUtils {
             WorldLoader.InitConfig serverConfig = new WorldLoader.InitConfig(dataPacks, Commands.CommandSelection.DEDICATED, PermissionSet.ALL_PERMISSIONS);
 
             WorldStem saveLoader = Util.blockUntilDone(executor -> WorldLoader.load(serverConfig, (dataLoadContext) -> {
-                LevelSettings dataGenLevel = new LevelSettings("Data Gen Level", GameType.CREATIVE, false, Difficulty.NORMAL, true, GameTestServer.DEMO_SETTINGS.gameRules(), dataLoadContext.dataConfiguration());
+                LevelSettings dataGenLevel = new LevelSettings("Data Gen Level", GameType.CREATIVE, LevelSettings.DifficultySettings.DEFAULT, true, dataLoadContext.dataConfiguration());
                 RegistryAccess.Frozen immutable = dataLoadContext.datapackDimensions().freeze();
 
-                PrimaryLevelData saveProperties = new PrimaryLevelData(dataGenLevel, WorldOptions.DEMO_OPTIONS, PrimaryLevelData.SpecialWorldProperty.FLAT, Lifecycle.stable());
+                PrimaryLevelData saveProperties = new PrimaryLevelData(dataGenLevel, PrimaryLevelData.SpecialWorldProperty.FLAT, Lifecycle.stable());
                 return new WorldLoader.DataLoadOutput<>(saveProperties, immutable);
-            }, WorldStem::new, Util.backgroundExecutor(), executor)).get();
+            }, (resources, managers, registries, cookie) ->
+                    new WorldStem(resources, managers, registries, null), Util.backgroundExecutor(), executor)).get();
             return SERVER_REGISTRY_MANAGER = saveLoader.registries().compositeAccess();
         } catch (ExecutionException e) {
             throw new RuntimeException(e.getCause());

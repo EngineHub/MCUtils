@@ -37,7 +37,7 @@ import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
 public class BlockRegistryDumper extends RegistryDumper<Block> {
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         setupGame();
         new Default().run();
     }
