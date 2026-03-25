@@ -18,7 +18,6 @@ import net.minecraft.world.level.block.state.properties.Property;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +29,7 @@ import static org.enginehub.util.minecraft.util.GameSetupUtils.setupGame;
 
 public class DataVersionDumper implements Dumper {
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         setupGame();
         new Default().run();
     }
@@ -97,14 +96,12 @@ public class DataVersionDumper implements Dumper {
             }
             bl.put("properties", properties);
             StringBuilder defaultState = new StringBuilder();
-            defaultState.append(blockId.toString());
-            if (!block.defaultBlockState().getValues().isEmpty()) {
-                List<String> bits = new ArrayList<>();
-                block.defaultBlockState().getValues().entrySet().stream()
-                    .sorted(Comparator.comparing(e -> e.getKey().getName()))
-                    .forEach(e ->
-                        bits.add(e.getKey().getName() + "=" + e.getValue().toString().toLowerCase())
-                    );
+            defaultState.append(blockId);
+            List<String> bits = block.defaultBlockState().getValues()
+                .sorted(Comparator.comparing(value -> value.property().getName()))
+                .map(value -> value.property().getName() + "=" + value.valueName())
+                .toList();
+            if (!bits.isEmpty()) {
                 defaultState.append("[").append(String.join(",", bits)).append("]");
             }
             bl.put("defaultstate", defaultState.toString());
@@ -145,4 +142,3 @@ public class DataVersionDumper implements Dumper {
         }
     }
 }
-
