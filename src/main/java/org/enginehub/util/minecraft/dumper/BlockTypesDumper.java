@@ -52,7 +52,8 @@ public class BlockTypesDumper extends RegistryClassDumper {
             Identifier.parse("mushroom_grow_block"),
             Identifier.parse("dry_vegetation_may_place_on"),
             Identifier.parse("big_dripleaf_placeable"),
-            Identifier.parse("bamboo_plantable_on")
+            Identifier.parse("bamboo_plantable_on"),
+            Identifier.parse("minecraft:concrete_powder")
         );
     }
 }
