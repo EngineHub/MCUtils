@@ -53,7 +53,8 @@ public class ItemTypesDumper extends RegistryClassDumper {
             Identifier.parse("tall_flowers"),
             Identifier.parse("flowers"),
             Identifier.parse("enchantable/sword"),
-            Identifier.parse("dyeable")
+            Identifier.parse("dyeable"),
+            Identifier.parse("minecraft:brewing_fuel")
         );
     }
 }

@@ -1,5 +1,5 @@
 plugins {
-    id("net.fabricmc.fabric-loom") version "1.16-SNAPSHOT"
+    id("net.fabricmc.fabric-loom") version "1.17-SNAPSHOT"
 }
 
 repositories {
@@ -15,8 +15,8 @@ loom {
 }
 
 dependencies {
-    "minecraft"("com.mojang:minecraft:26.2")
-    "implementation"("net.fabricmc:fabric-loader:0.19.3")
+    "minecraft"("com.mojang:minecraft:26.3-pre-3")
+    "implementation"("net.fabricmc:fabric-loader:0.19.5")
 
     "implementation"("com.squareup:javapoet:1.13.0")
 
