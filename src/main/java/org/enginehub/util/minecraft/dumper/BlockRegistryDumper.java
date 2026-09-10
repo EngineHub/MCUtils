@@ -101,13 +101,13 @@ public class BlockRegistryDumper extends RegistryDumper<Block> {
         map.put("slipperiness", b.getFriction());
         map.put("liquid", bs.liquid());
         map.put("solid", bs.isSolid());
-        map.put("movementBlocker", bs.blocksMotion());
+        map.put("movementBlocker", bs.isSolid());
         map.put("burnable", bs.ignitedByLava());
         map.put("opaque", bs.canOcclude());
         map.put("replacedDuringPlacement", bs.canBeReplaced());
         map.put("toolRequired", bs.requiresCorrectToolForDrops());
-        map.put("fragileWhenPushed", bs.getPistonPushReaction() == PushReaction.DESTROY);
-        map.put("unpushable", bs.getPistonPushReaction() == PushReaction.BLOCK);
+        map.put("fragileWhenPushed", bs.getPistonPushReaction() == PushReaction.POPPED);
+        map.put("unpushable", bs.getPistonPushReaction() == PushReaction.IMMOVEABLE);
         try {
             map.put("mapColor", rgb(((MapColor)mapColorField.get(bs)).col));
         } catch (IllegalAccessException e) {
