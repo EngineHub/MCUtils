@@ -53,7 +53,10 @@ public class BlockTypesDumper extends RegistryClassDumper {
             Identifier.parse("dry_vegetation_may_place_on"),
             Identifier.parse("big_dripleaf_placeable"),
             Identifier.parse("bamboo_plantable_on"),
-            Identifier.parse("minecraft:concrete_powder")
+            Identifier.parse("minecraft:concrete_powder"),
+            Identifier.parse("minecraft:overworld_carver_replaceables"),
+            Identifier.parse("minecraft:nether_carver_replaceables"),
+            Identifier.parse("minecraft:convertable_to_mud")
         );
     }
 }
