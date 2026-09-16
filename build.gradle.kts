@@ -15,7 +15,7 @@ loom {
 }
 
 dependencies {
-    "minecraft"("com.mojang:minecraft:26.3-pre-3")
+    "minecraft"("com.mojang:minecraft:26.3")
     "implementation"("net.fabricmc:fabric-loader:0.19.5")
 
     "implementation"("com.squareup:javapoet:1.13.0")
